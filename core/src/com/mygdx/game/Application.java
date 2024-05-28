@@ -3,15 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.socket.client.IO;
@@ -24,10 +18,9 @@ import java.net.URISyntaxException;
 
 public class Application extends ApplicationAdapter {
 	private SpriteBatch batch;
-	private Texture img;
-	private Sprite imgSprite;
 	private World world;
-	private Body body;
+	private Player player1;
+	private Player player2;
 	private Box2DDebugRenderer debugRenderer;
 	private Socket socket;
 	private Vector2 lastPosition = new Vector2(0, 0);
@@ -36,31 +29,12 @@ public class Application extends ApplicationAdapter {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		img = new Texture("circle_trans_100px.png");
-		imgSprite = new Sprite(img);
 
+		// Create player object
 		world = new World(new Vector2(0, 0), true);
 		debugRenderer = new Box2DDebugRenderer();
-
-		// Create kinematic body
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyDef.BodyType.KinematicBody;
-		bodyDef.position.set(400, 240);
-
-		body = world.createBody(bodyDef);
-
-		// Create a circle shape and attach it to the body
-		CircleShape circle = new CircleShape();
-		circle.setRadius(50); // Set to 50 to match our temporary player texture
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 1f;
-		fixtureDef.friction = 0.5f;
-		fixtureDef.restitution = 0.5f;
-
-		body.createFixture(fixtureDef);
-		circle.dispose();
+		player1 = new Player(world, 400, 240, true);
+		player2 = new Player(world, 400, 240, false);
 
 		// Initialize socket connection
 		try {
@@ -118,6 +92,7 @@ public class Application extends ApplicationAdapter {
 	}
 
 	private void handlePlayerUpdate(Vector2 data, String socketId) {
+		// Update player position or other properties based on the server update
 	}
 
 	@Override
@@ -126,7 +101,8 @@ public class Application extends ApplicationAdapter {
 		ScreenUtils.clear(0, 0, 0, 1);
 
 		batch.begin();
-		batch.draw(imgSprite, body.getPosition().x - imgSprite.getWidth() / 2, body.getPosition().y - imgSprite.getHeight() / 2);
+		batch.draw(player1.getSprite(), player1.getBody().getPosition().x - player1.getSprite().getWidth() / 2, player1.getBody().getPosition().y - player1.getSprite().getHeight() / 2);
+		batch.draw(player2.getSprite(), player2.getBody().getPosition().x - player2.getSprite().getWidth() / 2, player2.getBody().getPosition().y - player2.getSprite().getHeight() / 2);
 		batch.end();
 
 		debugRenderer.render(world, batch.getProjectionMatrix());
@@ -139,9 +115,9 @@ public class Application extends ApplicationAdapter {
 	}
 
 	private void updatePosition() {
-		if (body.getPosition().x != lastPosition.x || body.getPosition().y != lastPosition.y) {
-			lastPosition = new Vector2(body.getPosition().x, body.getPosition().y);
-			socket.emit("playerMove", body.getPosition());
+		if (player1.getBody().getPosition().x != lastPosition.x || player1.getBody().getPosition().y != lastPosition.y) {
+			lastPosition = new Vector2(player1.getBody().getPosition().x, player1.getBody().getPosition().y);
+			socket.emit("playerMove", player1.getBody().getPosition());
 		}
 	}
 
@@ -166,16 +142,17 @@ public class Application extends ApplicationAdapter {
 		// Normalize velocity to ensure consistent speed in all directions
 		if (velocity.len() > 0) {
 			velocity.nor().scl(speed);
-			body.setLinearVelocity(velocity);
+			player1.getBody().setLinearVelocity(velocity);
 		} else {
-			body.setLinearVelocity(0, 0);
+			player1.getBody().setLinearVelocity(0, 0);
 		}
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
-		img.dispose();
+		player1.dispose();
+		player2.dispose();
 		world.dispose();
 		debugRenderer.dispose();
 		if (socket != null) {
