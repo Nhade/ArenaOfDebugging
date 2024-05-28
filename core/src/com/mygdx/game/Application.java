@@ -31,6 +31,7 @@ public class Application extends ApplicationAdapter {
 	private Body body;
 	private Box2DDebugRenderer debugRenderer;
 	private Socket socket;
+    private Vector2 lastPosition = new Vector2(0, 0);
 
 	@Override
 	public void create() {
@@ -112,8 +113,16 @@ public class Application extends ApplicationAdapter {
 
 	private void update(float delta) {
 		handleInput(delta);
+        updatePosition();
 		world.step(delta, 6, 2);
 	}
+
+    private void updatePosition() {
+        if (body.getPosition().x != lastPosition.x || body.getPosition().y != lastPosition.y) {
+            lastPosition = new Vector2(body.getPosition().x, body.getPosition().y);
+            socket.emit("playerMove", body.getPosition());
+        }
+    }
 
 	private void handleInput(float delta) {
 		float speed = 200;
