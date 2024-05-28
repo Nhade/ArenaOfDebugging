@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +30,8 @@ public class Application extends ApplicationAdapter {
 	private Body body;
 	private Box2DDebugRenderer debugRenderer;
 	private Socket socket;
-    private Vector2 lastPosition = new Vector2(0, 0);
+	private Vector2 lastPosition = new Vector2(0, 0);
+	private String mySocketId;
 
 	@Override
 	public void create() {
@@ -70,6 +70,7 @@ public class Application extends ApplicationAdapter {
 				@Override
 				public void call(Object... args) {
 					System.out.println("Connected to the server");
+					mySocketId = socket.id();
 					JSONObject data = new JSONObject();
 					try {
 						data.put("player", "player1");
@@ -85,6 +86,16 @@ public class Application extends ApplicationAdapter {
 					System.out.println("Game update received: " + data);
 					// handleGameUpdate(data);
 				}
+			}).on("playerMove", new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					Vector2 data = (Vector2) args[0];
+					String socketId = (String) args[1];
+					System.out.println("Move data received: " + String.format("id: %s, move: %s", socketId, data));
+					if (!socketId.equals(mySocketId)) {
+						handlePlayerUpdate(data, socketId);
+					}
+				}
 			}).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
@@ -97,6 +108,9 @@ public class Application extends ApplicationAdapter {
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void handlePlayerUpdate(Vector2 data, String socketId) {
 	}
 
 	@Override
@@ -113,16 +127,16 @@ public class Application extends ApplicationAdapter {
 
 	private void update(float delta) {
 		handleInput(delta);
-        updatePosition();
+		updatePosition();
 		world.step(delta, 6, 2);
 	}
 
-    private void updatePosition() {
-        if (body.getPosition().x != lastPosition.x || body.getPosition().y != lastPosition.y) {
-            lastPosition = new Vector2(body.getPosition().x, body.getPosition().y);
-            socket.emit("playerMove", body.getPosition());
-        }
-    }
+	private void updatePosition() {
+		if (body.getPosition().x != lastPosition.x || body.getPosition().y != lastPosition.y) {
+			lastPosition = new Vector2(body.getPosition().x, body.getPosition().y);
+			socket.emit("playerMove", body.getPosition());
+		}
+	}
 
 	private void handleInput(float delta) {
 		float speed = 200;
