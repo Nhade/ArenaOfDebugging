@@ -36,7 +36,7 @@ public class Application extends ApplicationAdapter {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		img = new Texture("circle_trans_100px.png");
 		imgSprite = new Sprite(img);
 
 		world = new World(new Vector2(0, 0), true);
@@ -51,7 +51,7 @@ public class Application extends ApplicationAdapter {
 
 		// Create a circle shape and attach it to the body
 		CircleShape circle = new CircleShape();
-		circle.setRadius(32); // Radius in pixels, scale if necessary
+		circle.setRadius(50); // Set to 50 to match our temporary player texture
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
@@ -89,11 +89,18 @@ public class Application extends ApplicationAdapter {
 			}).on("playerMove", new Emitter.Listener() {
 				@Override
 				public void call(Object... args) {
-					Vector2 data = (Vector2) args[0];
-					String socketId = (String) args[1];
-					System.out.println("Move data received: " + String.format("id: %s, move: %s", socketId, data));
-					if (!socketId.equals(mySocketId)) {
-						handlePlayerUpdate(data, socketId);
+					String socketId;
+					try {
+						JSONObject obj = (JSONObject) args[0];
+						socketId = obj.getString("id");
+						String[] positionString = obj.getString("data").replaceAll("[)(]", "").split(",");
+						Vector2 position = new Vector2(Float.parseFloat(positionString[0]), Float.parseFloat(positionString[1]));
+						System.out.println("Move data received: " + String.format("id: %s, position: %s, %s", socketId, position.x, position.y));
+						if (!socketId.equals(mySocketId)) {
+							handlePlayerUpdate(position, socketId);
+						}
+					} catch (JSONException e) {
+						throw new RuntimeException(e);
 					}
 				}
 			}).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
