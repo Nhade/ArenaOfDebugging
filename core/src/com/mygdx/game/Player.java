@@ -13,11 +13,9 @@ public class Player {
     private Body body;
     private boolean friendly;
     private boolean visible;
-    private Texture texture1=new Texture("circle_trans_100px.png");
-    private Texture texture2=new Texture("badlogic.jpg");
     private Sprite sprite;
 
-    public Player(World world, float x, float y,boolean friendly) {
+    public Player(World world, float x, float y, boolean friendly, Texture texture) {
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -29,14 +27,13 @@ public class Player {
         circle.setRadius(50); // Set to 50 to match our temporary player texture
         circle.dispose();
 
-        // according to friendly value to determine which sprite to use
-        if(friendly) {
-            sprite = new Sprite(texture1);
-        }else{
-            sprite = new Sprite(texture2);
-        }
-        this.friendly = true;
-        this.visible = true;
+        sprite = new Sprite(texture);
+//        // according to friendly value to determine which sprite to use
+//        if (friendly) {
+//            sprite = new Sprite(texture1);
+//        } else {
+//            sprite = new Sprite(texture2);
+//        }
     }
 
     public Body getBody() {
@@ -60,7 +57,7 @@ public class Player {
     }
 
     public void dispose() {
-        texture1.dispose();
-        texture2.dispose();
+//        texture1.dispose();
+//        texture2.dispose();
     }
 }
