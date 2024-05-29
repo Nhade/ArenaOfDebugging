@@ -1,2 +1,4 @@
-package com.mygdx.game;public class Buff {
+package com.mygdx.game;
+
+public class Buff {
 }
