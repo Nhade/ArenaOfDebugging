@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -30,11 +31,15 @@ public class Application extends ApplicationAdapter {
 	private Vector2 lastPosition = new Vector2(0, 0);
 	private String mySocketId;
 	private ArrayList<String> ids = new ArrayList<>();
+	private Texture mapImg;//*****
+	private OrthographicCamera camera;//*****
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-
+		// Create map and camera follower
+		mapImg = new Texture("FinalProjectGameMap.kra-autosave.png");
+		camera = new OrthographicCamera(2000, 2000);//*****
 		// Create player object
 		world = new World(new Vector2(0, 0), true);
 		debugRenderer = new Box2DDebugRenderer();
@@ -120,10 +125,14 @@ public class Application extends ApplicationAdapter {
 		ScreenUtils.clear(0, 0, 0, 1);
 
 		batch.begin();
-		batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y - myPlayer.getSprite().getHeight() / 2);
-		if (!players.isEmpty()) {
-			players.forEach((id, player) -> batch.draw(player.getSprite(), player.getBody().getPosition().x - player.getSprite().getWidth() / 2, player.getBody().getPosition().y - player.getSprite().getHeight() / 2));
-		}
+			batch.draw(mapImg, 0, 0);
+			camera.position.set(myPlayer.getBody().getPosition().x, myPlayer.getBody().getPosition().y, 0);
+			camera.update();
+			batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y - myPlayer.getSprite().getHeight() / 2);
+			if (!players.isEmpty()) {
+				players.forEach((id, player) -> batch.draw(player.getSprite(), player.getBody().getPosition().x - player.getSprite().getWidth() / 2, player.getBody().getPosition().y - player.getSprite().getHeight() / 2));
+			}
+			batch.setProjectionMatrix(camera.combined);
 		batch.end();
 
 		debugRenderer.render(world, batch.getProjectionMatrix());
@@ -143,7 +152,7 @@ public class Application extends ApplicationAdapter {
 	}
 
 	private void handleInput(float delta) {
-		float speed = 200;
+		float speed = 20000;
 		Vector2 velocity = new Vector2();
 		velocity.x = 0;
 		velocity.y = 0;
