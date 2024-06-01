@@ -1,2 +1,4 @@
-package com.mygdx.game;public class Tower {
+package com.mygdx.game;
+
+public class Tower {
 }
