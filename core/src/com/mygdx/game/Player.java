@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import static com.mygdx.game.Constant.PPM;
+
 public class Player {
     private Body body;
     private boolean friendly;
@@ -22,13 +24,13 @@ public class Player {
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(x/PPM, y/PPM);
 
         body = world.createBody(bodyDef);
 
         // Create and configure fixture (collision functionality)
         CircleShape circle = new CircleShape();
-        circle.setRadius(50); // Set to 50 to match our temporary player texture
+        circle.setRadius(50/PPM); // Set to 50 to match our temporary player texture
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;

@@ -21,6 +21,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.mygdx.game.Constant.*;
+
 public class Application extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private World world;
@@ -39,7 +41,7 @@ public class Application extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		// Create map and camera follower
 		mapImg = new Texture("FinalProjectGameMap.kra-autosave.png");
-		camera = new OrthographicCamera(2000, 2000);//*****
+		camera = new OrthographicCamera(WINDOW_WIDTH, WINDOW_HEIGHT);//*****
 		// Create player object
 		world = new World(new Vector2(0, 0), true);
 		debugRenderer = new Box2DDebugRenderer();
@@ -126,11 +128,11 @@ public class Application extends ApplicationAdapter {
 
 		batch.begin();
 			batch.draw(mapImg, 0, 0);
-			camera.position.set(myPlayer.getBody().getPosition().x, myPlayer.getBody().getPosition().y, 0);
+			camera.position.set(myPlayer.getBody().getPosition().x*PPM ,myPlayer.getBody().getPosition().y*PPM, 0);
 			camera.update();
-			batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y - myPlayer.getSprite().getHeight() / 2);
+			batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x *PPM- myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y*PPM - myPlayer.getSprite().getHeight() / 2);
 			if (!players.isEmpty()) {
-				players.forEach((id, player) -> batch.draw(player.getSprite(), player.getBody().getPosition().x - player.getSprite().getWidth() / 2, player.getBody().getPosition().y - player.getSprite().getHeight() / 2));
+				players.forEach((id, player) -> batch.draw(player.getSprite(), player.getBody().getPosition().x *PPM- player.getSprite().getWidth() / 2, player.getBody().getPosition().y*PPM - player.getSprite().getHeight() / 2));
 			}
 			batch.setProjectionMatrix(camera.combined);
 		batch.end();
@@ -152,7 +154,7 @@ public class Application extends ApplicationAdapter {
 	}
 
 	private void handleInput(float delta) {
-		float speed = 20000;
+		float speed = 10;
 		Vector2 velocity = new Vector2();
 		velocity.x = 0;
 		velocity.y = 0;
