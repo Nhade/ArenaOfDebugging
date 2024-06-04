@@ -23,7 +23,7 @@ public class Player {
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x/PPM, y/PPM);
 
         body = world.createBody(bodyDef);
@@ -38,7 +38,7 @@ public class Player {
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.5f;
 
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
         circle.dispose();
 
         // Create the sprite

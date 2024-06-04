@@ -27,6 +27,7 @@ public class Application extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private World world;
 	private Player myPlayer;
+	private Obstacle obstacle;
 	private HashMap<String, Player> players = new HashMap<>();
 	private Box2DDebugRenderer debugRenderer;
 	private Socket socket;
@@ -44,10 +45,11 @@ public class Application extends ApplicationAdapter {
 		camera = new OrthographicCamera(WINDOW_WIDTH, WINDOW_HEIGHT);//*****
 		// Create player object
 		world = new World(new Vector2(0, 0), true);
+		obstacle = new Obstacle(world);
 		debugRenderer = new Box2DDebugRenderer();
 		Texture texture1 = new Texture("circle_trans_100px.png");
 		Texture texture2 = new Texture("badlogic.jpg");
-		myPlayer = new Player(world, 400, 240, true, texture1);
+		myPlayer = new Player(world, 1800, 7400, true, texture1);
 
 		// Initialize socket connection
 		try {
