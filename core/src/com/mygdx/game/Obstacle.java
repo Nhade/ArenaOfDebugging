@@ -71,7 +71,7 @@ public class Obstacle {
         Vector2[] vertices7B = new Vector2[]{
                 new Vector2(2745, 5604),
                 new Vector2(3159, 5441),
-                new Vector2(3477, 4905),
+                new Vector2(3477, 5594),
                 new Vector2(2802, 5912)
         };
         Vector2[] vertices7C = new Vector2[]{
