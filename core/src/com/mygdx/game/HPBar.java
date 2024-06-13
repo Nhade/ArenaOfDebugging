@@ -14,7 +14,7 @@ public class HPBar {
     private float totalHealth;
     private float healthBarX;
     private float healthBarY;
-    private Texture texture;
+    private Texture hpDisplaytexture;
     private Texture backgroundTexture;
     private Texture barBorderTexture;
     private TextureRegion region;
@@ -23,7 +23,7 @@ public class HPBar {
     private Sprite barBorderSprite;
     private float multipleSize;
 
-    public HPBar(boolean friendly, float totalHealth, float multipleSize){
+    public HPBar(boolean friendly, float totalHealth, float multipleSize, Texture hpDisplaytexture) {
         this.friendly = friendly;
         this.totalHealth = totalHealth;
         this.multipleSize = multipleSize;
@@ -31,31 +31,38 @@ public class HPBar {
         HEALTH_BAR_WIDTH = HEALTH_BAR_WIDTH * multipleSize;
         segmentHeight = segmentHeight * multipleSize;
 
-        if (friendly)
-            texture = new Texture("BarV9BLUE_ProgressBar.png");// to do
-        else
-            texture = new Texture("BarV5RED_ProgressBarBorder.png");// to do
+        this.hpDisplaytexture = hpDisplaytexture;
     }
-    public Sprite HPBarDisplay(){
+
+    public void updateHealth(float currentHealth, float totalHealth) {
+        this.currentHealth = currentHealth;
+        this.totalHealth = totalHealth;
+    }
+
+    public void updatePosition(float x, float y) {
+        healthBarX = x - HEALTH_BAR_WIDTH / 2;
+        healthBarY = y + 70;
+    }
+
+    public Sprite HPBarDisplay() {
         float healthPercentage = currentHealth / totalHealth;
         int filledSegments = (int) (HEALTH_BAR_WIDTH * healthPercentage);
-        region = new TextureRegion(texture, 0, 0, filledSegments, 21);
+        region = new TextureRegion(hpDisplaytexture, 0, 0, filledSegments, 21);
         HPSprite = new Sprite(region);
         HPSprite.setPosition(healthBarX, healthBarY);
 
         return HPSprite;
     }
-    public Sprite HPBarBackground(float positionX, float positionY, float remainHealth){
-        healthBarX = positionX - HEALTH_BAR_WIDTH/2;
-        healthBarY = positionY + 70;
-        currentHealth = remainHealth;
+
+    public Sprite HPBarBackground() {
 
         backgroundTexture = new Texture("BarV1Background.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setPosition(healthBarX, healthBarY);
         return backgroundSprite;
     }
-    public Sprite HPBarBorder(){
+
+    public Sprite HPBarBorder() {
         barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
         barBorderSprite = new Sprite(barBorderTexture);
         barBorderSprite.setPosition(healthBarX, healthBarY);

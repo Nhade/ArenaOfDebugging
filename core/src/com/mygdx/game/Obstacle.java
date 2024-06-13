@@ -639,7 +639,6 @@ public class Obstacle {
 
             body.createFixture(fixtureDef);
             poly.dispose();
-            System.out.println(world);
         }
     }
 }

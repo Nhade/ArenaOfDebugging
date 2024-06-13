@@ -1,13 +1,10 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -20,13 +17,20 @@ public class Player {
     private Sprite sprite;
     float currentHealth;
     float totalHealth;
+    private float playerX, playerY;
     private float lastAttackTime;
+    public boolean dead = false;
+    private HPBar hpBar;
 
-    public Player(World world, float x, float y, boolean friendly, Texture texture, float currentHealth, float totalHealth) {
+    public Player(World world, float x, float y, boolean friendly, Texture playerTexture, Texture hpBarTexture, float currentHealth, float totalHealth) {
         this.friendly = friendly;
         this.currentHealth = currentHealth;
         this.totalHealth = totalHealth;
         this.lastAttackTime = 0;
+        this.visible = true;
+        playerX = x;
+        playerY = y;
+        hpBar = new HPBar(friendly, totalHealth, 1, hpBarTexture);
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
@@ -49,12 +53,34 @@ public class Player {
         circle.dispose();
 
         // Create the sprite
-        sprite = new Sprite(texture);
+        sprite = new Sprite(playerTexture);
         sprite.setSize(100, 100); // Assuming 100x100 size for the sprite
         sprite.setOriginCenter();
 
         // Set sprite position to match the body's position
         sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
+    }
+
+    public void updateHP(float currentHealth, float totalHealth) {
+        this.currentHealth = currentHealth;
+        this.totalHealth = totalHealth;
+    }
+
+    public void updateHpBar() {
+        hpBar.updatePosition(playerX * PPM, playerY * PPM);
+        hpBar.updateHealth(currentHealth, totalHealth);
+    }
+
+    public Sprite getHpBarDisplay() {
+        return hpBar.HPBarDisplay();
+    }
+
+    public Sprite getHpBarBackground() {
+        return hpBar.HPBarBackground();
+    }
+
+    public Sprite getHpBarBorder() {
+        return hpBar.HPBarBorder();
     }
 
     public Body getBody() {
@@ -65,8 +91,18 @@ public class Player {
         return sprite;
     }
 
-    public void setVisible(boolean visible) {
+    public void setPosition(float x, float y) {
+        playerX = x;
+        playerY = y;
+    }
+
+    private void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+        setVisible(!dead);
     }
 
     public boolean isVisible() {
@@ -77,26 +113,12 @@ public class Player {
         return friendly;
     }
 
+    public boolean isDead() {
+        return dead;
+    }
+
     public void dispose() {
         // Assuming you might want to dispose of the texture, but it's not shown how texture is managed
         sprite.getTexture().dispose();
     }
-
-//    private void drawHealthBar(Player player, Color color) {
-//        final float HEALTH_BAR_WIDTH = 100.0f;
-//        float healthPercentage = (float) player.currentHealth / player.totalHealth;
-//        int filledSegments = (int) (HEALTH_BAR_WIDTH * healthPercentage);
-//        float segmentHeight = 10.0f; // Height of each health bar segment
-//        float healthBarX = player.getBody().getPosition().x - HEALTH_BAR_WIDTH / 2;
-//        float healthBarY = player.getBody().getPosition().y + 25; // Position the health bar above the player
-//
-//        for (int i = 0; i < HEALTH_BAR_WIDTH; i++) {
-//            if (i < filledSegments) {
-//                shapeRenderer.setColor(color);
-//            } else {
-//                shapeRenderer.setColor(Color.GRAY);
-//            }
-//            shapeRenderer.rect(healthBarX + i, healthBarY, 1, segmentHeight);
-//        }
-//    }
 }
