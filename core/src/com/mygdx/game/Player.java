@@ -35,13 +35,13 @@ public class Player {
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x/PPM, y/PPM);
+        bodyDef.position.set(x / PPM, y / PPM);
 
         body = world.createBody(bodyDef);
 
         // Create and configure fixture (collision functionality)
         CircleShape circle = new CircleShape();
-        circle.setRadius(50/PPM); // Set to 50 to match our temporary player texture
+        circle.setRadius(50 / PPM); // Set to 50 to match our temporary player texture
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
@@ -54,7 +54,7 @@ public class Player {
 
         // Create the sprite
         sprite = new Sprite(playerTexture);
-        sprite.setSize(100, 100); // Assuming 100x100 size for the sprite
+        sprite.setSize(100, 100);//TODO: modified to be 170
         sprite.setOriginCenter();
 
         // Set sprite position to match the body's position
@@ -81,6 +81,21 @@ public class Player {
 
     public Sprite getHpBarBorder() {
         return hpBar.HPBarBorder();
+    }
+
+    /**/
+    public float getHPBarScale() {
+        return hpBar.hPBarScale();
+    }
+
+    /**/
+    public float getHPBarX() {
+        return hpBar.getHealthBarX();
+    }
+
+    /**/
+    public float getHPBarY() {
+        return hpBar.getHealthBarY();
     }
 
     public Body getBody() {

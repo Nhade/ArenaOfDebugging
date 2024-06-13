@@ -24,12 +24,13 @@ public class HPBar {
     private float multipleSize;
     private float scale;
 
+
     public HPBar(boolean friendly, float totalHealth, float multipleSize, Texture hpDisplaytexture) {
         this.friendly = friendly;
         this.totalHealth = totalHealth;
         this.multipleSize = multipleSize;
         this.hpDisplaytexture = hpDisplaytexture;
-        this.scale = (float) (0.75+multipleSize/4);
+        this.scale = (float) (0.75 + multipleSize / 4);
     }
 
     public void updateHealth(float currentHealth, float totalHealth) {
@@ -45,10 +46,10 @@ public class HPBar {
     public Sprite HPBarDisplay() {
         float healthPercentage = currentHealth / totalHealth;
         int filledSegments = (int) (HEALTH_BAR_WIDTH * healthPercentage * multipleSize);
-        region = new TextureRegion(hpDisplaytexture, 0, 0, filledSegments, (int)segmentHeight);
+        region = new TextureRegion(hpDisplaytexture, 0, 0, filledSegments, (int) segmentHeight);
         HPSprite = new Sprite(region);
         HPSprite.setScale(1, scale);
-        HPSprite.setPosition((healthBarX + HEALTH_BAR_WIDTH/2) - (HEALTH_BAR_WIDTH * multipleSize)/2, (healthBarY-70)+70*scale);
+        HPSprite.setPosition((healthBarX + HEALTH_BAR_WIDTH / 2) - (HEALTH_BAR_WIDTH * multipleSize) / 2, (healthBarY - 70) + 70 * scale);
 
         return HPSprite;
     }
@@ -56,7 +57,7 @@ public class HPBar {
     public Sprite HPBarBackground() {
         backgroundTexture = new Texture("BarV1Background.png");
         backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setPosition(healthBarX, (healthBarY-70)+70*scale);
+        backgroundSprite.setPosition(healthBarX, (healthBarY - 70) + 70 * scale);
         backgroundSprite.setScale(multipleSize, scale);
         return backgroundSprite;
     }
@@ -64,8 +65,23 @@ public class HPBar {
     public Sprite HPBarBorder() {
         barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
         barBorderSprite = new Sprite(barBorderTexture);
-        barBorderSprite.setPosition(healthBarX-2, (healthBarY-70)+(70*scale)-2);
+        barBorderSprite.setPosition(healthBarX - 2, (healthBarY - 70) + (70 * scale) - 2);
         barBorderSprite.setScale(multipleSize, scale);
         return barBorderSprite;
+    }
+
+    /**/
+    public float hPBarScale() {
+        return scale;
+    }
+
+    /**/
+    public float getHealthBarX() {
+        return healthBarX;
+    }
+
+    /**/
+    public float getHealthBarY() {
+        return healthBarY;
     }
 }

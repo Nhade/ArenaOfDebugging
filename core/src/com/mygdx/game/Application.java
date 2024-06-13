@@ -3,10 +3,12 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,6 +27,8 @@ import java.util.Objects;
 
 import static com.mygdx.game.Constant.*;
 
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 public class Application extends ApplicationAdapter {
     private SpriteBatch batch;
     private World world;
@@ -38,13 +42,15 @@ public class Application extends ApplicationAdapter {
     private ArrayList<String> ids = new ArrayList<>();
     private Texture mapImg;
     private OrthographicCamera camera;
+    private BitmapFont font;
+    private GlyphLayout glyphLayout;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         // Create map and camera follower
         mapImg = new Texture("FinalProjectGameMap.kra-autosave.png");
-        camera = new OrthographicCamera(WINDOW_WIDTH, WINDOW_HEIGHT);
+        camera = new OrthographicCamera(WINDOW_WIDTH * 1.5f, WINDOW_HEIGHT * 1.5f);
         // Create player object
         world = new World(new Vector2(0, 0), true);
         obstacle = new Obstacle(world);
@@ -53,8 +59,16 @@ public class Application extends ApplicationAdapter {
         Texture texture2 = new Texture("badlogic.jpg");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
+        // Generate a font using FreeTypeFontGenerator
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 24;
+        parameter.color = Color.WHITE;
+        font = generator.generateFont(parameter);
+        generator.dispose();
 
-        myPlayer = new Player(world, 500, 500, true, texture1, friendlyHpDisplay, 1000, 1000);
+
+        myPlayer = new Player(world, 1800, 7200, true, texture1, friendlyHpDisplay, 15000, 15000);
         // Initialize socket connection
         try {
             socket = IO.socket("http://localhost:3000");
@@ -94,7 +108,6 @@ public class Application extends ApplicationAdapter {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    // handleGameUpdate(data);
                 }
             }).on("playerMove", new Emitter.Listener() {
                 @Override
@@ -171,12 +184,24 @@ public class Application extends ApplicationAdapter {
         camera.position.set(myPlayer.getBody().getPosition().x * PPM, myPlayer.getBody().getPosition().y * PPM, 0);
         camera.update();
         if (!myPlayer.isDead()) {
+//            batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x * PPM - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - myPlayer.getSprite().getHeight() / 2,  myPlayer.getSprite().getWidth() * 1.7f,  myPlayer.getSprite().getHeight() * 1.7f);
             batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x * PPM - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - myPlayer.getSprite().getHeight() / 2);
+            myPlayer.updateHpBar();
+            myPlayer.getHpBarBackground().draw(batch);
+            myPlayer.getHpBarDisplay().draw(batch);
+            myPlayer.getHpBarBorder().draw(batch);
+            if (myPlayer.totalHealth >= 10 * 1000) {
+                font.draw(batch, String.format("%d k", (int) (myPlayer.currentHealth / 1000)) + " / " + String.format("%d k", (int) (myPlayer.totalHealth / 1000)), myPlayer.getHPBarX() + 83, (myPlayer.getHPBarY() - 70) + 90 * myPlayer.getHPBarScale());
+            } else {
+                font.draw(batch, String.format("%.1f k", myPlayer.currentHealth / 1000) + " / " + String.format("%.1f k", myPlayer.totalHealth / 1000), myPlayer.getHPBarX() + 77, (myPlayer.getHPBarY() - 70) + 90 * myPlayer.getHPBarScale());
+            }
         }
         if (!players.isEmpty()) {
             players.forEach((id, player) -> {
-                if (player.isVisible()) {
+                if (player.isVisible() && !id.equals(mySocketId)) {
+//                    batch.draw(player.getSprite(), player.getBody().getPosition().x * PPM - player.getSprite().getWidth() / 2, player.getBody().getPosition().y * PPM - player.getSprite().getHeight() / 2,  player.getSprite().getWidth() * 1.7f, player.getSprite().getHeight() * 1.7f);
                     batch.draw(player.getSprite(), player.getBody().getPosition().x * PPM - player.getSprite().getWidth() / 2, player.getBody().getPosition().y * PPM - player.getSprite().getHeight() / 2);
+//                    player.getSprite().draw(batch);
                     player.updateHpBar();
                     player.getHpBarBackground().draw(batch);
                     player.getHpBarDisplay().draw(batch);
@@ -217,7 +242,7 @@ public class Application extends ApplicationAdapter {
             myPlayer.getBody().setLinearVelocity(new Vector2(0, 0));
             return;
         }
-        float speed = 10;
+        float speed = 16f;
         Vector2 velocity = new Vector2();
         velocity.x = 0;
         velocity.y = 0;
