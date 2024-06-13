@@ -68,7 +68,7 @@ public class Application extends ApplicationAdapter {
         generator.dispose();
 
 
-        myPlayer = new Player(world, 1800, 7200, true, texture1, friendlyHpDisplay, 15000, 15000);
+        myPlayer = new Player(world, 1800, 7200, true, texture1, friendlyHpDisplay, 1000, 1000);
         // Initialize socket connection
         try {
             socket = IO.socket("http://localhost:3000");
@@ -206,6 +206,11 @@ public class Application extends ApplicationAdapter {
                     player.getHpBarBackground().draw(batch);
                     player.getHpBarDisplay().draw(batch);
                     player.getHpBarBorder().draw(batch);
+                    if (player.totalHealth >= 10 * 1000) {
+                        font.draw(batch, String.format("%d k", (int) (player.currentHealth / 1000)) + " / " + String.format("%d k", (int) (player.totalHealth / 1000)), player.getHPBarX() + 83, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+                    } else {
+                        font.draw(batch, String.format("%.1f k", player.currentHealth / 1000) + " / " + String.format("%.1f k", player.totalHealth / 1000), player.getHPBarX() + 77, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+                    }
                 }
 
             });
