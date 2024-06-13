@@ -30,7 +30,7 @@ public class Player {
         this.visible = true;
         playerX = x;
         playerY = y;
-        hpBar = new HPBar(friendly, totalHealth, 1, hpBarTexture);
+        hpBar = new HPBar(friendly, totalHealth, 1f, hpBarTexture);
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
