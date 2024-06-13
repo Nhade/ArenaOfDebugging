@@ -3,9 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -34,11 +36,14 @@ public class Application extends ApplicationAdapter {
 	private Vector2 lastPosition = new Vector2(0, 0);
 	private String mySocketId;
 	private ArrayList<String> ids = new ArrayList<>();
-	private Texture mapImg;//*****
-	private OrthographicCamera camera;//*****
+	private Texture mapImg;
+	private OrthographicCamera camera;
+	private ShapeRenderer shapeRenderer;//*****
+	private HPBar myPlayerHpBar;//*****
 
 	@Override
 	public void create() {
+		//shapeRenderer = new ShapeRenderer();//*****
 		batch = new SpriteBatch();
 		// Create map and camera follower
 		mapImg = new Texture("FinalProjectGameMap.kra-autosave.png");
@@ -49,8 +54,9 @@ public class Application extends ApplicationAdapter {
 		debugRenderer = new Box2DDebugRenderer();
 		Texture texture1 = new Texture("circle_trans_100px.png");
 		Texture texture2 = new Texture("badlogic.jpg");
-		myPlayer = new Player(world, 1800, 7400, true, texture1);
 
+		myPlayer = new Player(world, 1800, 7400, true, texture1, 5, 100);
+		myPlayerHpBar = new HPBar(true, myPlayer.totalHealth, 1);//*****
 		// Initialize socket connection
 		try {
 			socket = IO.socket("http://localhost:3000");
@@ -76,7 +82,7 @@ public class Application extends ApplicationAdapter {
 						JSONArray array = obj.getJSONArray("ids");
 						for (int i = 0; i < array.length(); i++) {
 							if (!ids.contains(array.getString(i)) && !array.getString(i).equals(mySocketId)) {
-								players.put(array.getString(i), new Player(world, 0, 0, true, texture1));
+								players.put(array.getString(i), new Player(world, 0, 0, true, texture1, 100, 100));
 								ids.add(array.getString(i));
 							}
 						}
@@ -137,6 +143,9 @@ public class Application extends ApplicationAdapter {
 				players.forEach((id, player) -> batch.draw(player.getSprite(), player.getBody().getPosition().x *PPM- player.getSprite().getWidth() / 2, player.getBody().getPosition().y*PPM - player.getSprite().getHeight() / 2));
 			}
 			batch.setProjectionMatrix(camera.combined);
+			myPlayerHpBar.HPBarBackground(myPlayer.getBody().getPosition().x*PPM, myPlayer.getBody().getPosition().y*PPM, myPlayer.currentHealth).draw(batch);
+			myPlayerHpBar.HPBarDisplay().draw(batch);
+			myPlayerHpBar.HPBarBorder().draw(batch);
 		batch.end();
 
 		debugRenderer.render(world, batch.getProjectionMatrix());

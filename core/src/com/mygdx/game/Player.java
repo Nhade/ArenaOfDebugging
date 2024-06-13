@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -17,9 +18,15 @@ public class Player {
     private boolean friendly;
     private boolean visible;
     private Sprite sprite;
+    float currentHealth;
+    float totalHealth;
+    private float lastAttackTime;
 
-    public Player(World world, float x, float y, boolean friendly, Texture texture) {
+    public Player(World world, float x, float y, boolean friendly, Texture texture, float currentHealth, float totalHealth) {
         this.friendly = friendly;
+        this.currentHealth = currentHealth;
+        this.totalHealth = totalHealth;
+        this.lastAttackTime = 0;
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
@@ -74,4 +81,22 @@ public class Player {
         // Assuming you might want to dispose of the texture, but it's not shown how texture is managed
         sprite.getTexture().dispose();
     }
+
+//    private void drawHealthBar(Player player, Color color) {
+//        final float HEALTH_BAR_WIDTH = 100.0f;
+//        float healthPercentage = (float) player.currentHealth / player.totalHealth;
+//        int filledSegments = (int) (HEALTH_BAR_WIDTH * healthPercentage);
+//        float segmentHeight = 10.0f; // Height of each health bar segment
+//        float healthBarX = player.getBody().getPosition().x - HEALTH_BAR_WIDTH / 2;
+//        float healthBarY = player.getBody().getPosition().y + 25; // Position the health bar above the player
+//
+//        for (int i = 0; i < HEALTH_BAR_WIDTH; i++) {
+//            if (i < filledSegments) {
+//                shapeRenderer.setColor(color);
+//            } else {
+//                shapeRenderer.setColor(Color.GRAY);
+//            }
+//            shapeRenderer.rect(healthBarX + i, healthBarY, 1, segmentHeight);
+//        }
+//    }
 }
