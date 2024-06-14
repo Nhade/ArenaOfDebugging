@@ -87,17 +87,14 @@ public class Player {
         return hpBar.HPBarBorder();
     }
 
-    /**/
     public float getHPBarScale() {
         return hpBar.hPBarScale();
     }
 
-    /**/
     public float getHPBarX() {
         return hpBar.getHealthBarX();
     }
 
-    /**/
     public float getHPBarY() {
         return hpBar.getHealthBarY();
     }
@@ -108,6 +105,14 @@ public class Player {
 
     public Sprite getSprite() {
         return sprite;
+    }
+
+    public float getCenterX() {
+        return playerX * PPM - sprite.getWidth() / 2;
+    }
+
+    public float getCenterY() {
+        return playerY * PPM - sprite.getHeight() / 2;
     }
 
     public void setPosition(float x, float y) {

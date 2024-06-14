@@ -70,17 +70,14 @@ public class HPBar {
         return barBorderSprite;
     }
 
-    /**/
     public float hPBarScale() {
         return scale;
     }
 
-    /**/
     public float getHealthBarX() {
         return healthBarX;
     }
 
-    /**/
     public float getHealthBarY() {
         return healthBarY;
     }

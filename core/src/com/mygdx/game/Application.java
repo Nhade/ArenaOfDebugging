@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 import static com.mygdx.game.Constant.*;
 
@@ -243,34 +242,14 @@ public class Application extends ApplicationAdapter {
         camera.update();
         if (!myPlayer.isDead()) {
 //            batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x * PPM - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - myPlayer.getSprite().getHeight() / 2,  myPlayer.getSprite().getWidth() * 1.7f,  myPlayer.getSprite().getHeight() * 1.7f);
-            batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x * PPM - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - myPlayer.getSprite().getHeight() / 2);
-            myPlayer.updateHpBar();
-            myPlayer.getHpBarBackground().draw(batch);
-            myPlayer.getHpBarDisplay().draw(batch);
-            myPlayer.getHpBarBorder().draw(batch);
-            if (myPlayer.totalHealth >= 10 * 1000) {
-                font.draw(batch, String.format("%d k", (int) (myPlayer.currentHealth / 1000)) + " / " + String.format("%d k", (int) (myPlayer.totalHealth / 1000)), myPlayer.getHPBarX() + 83, (myPlayer.getHPBarY() - 70) + 90 * myPlayer.getHPBarScale());
-            } else {
-                font.draw(batch, String.format("%.1f k", myPlayer.currentHealth / 1000) + " / " + String.format("%.1f k", myPlayer.totalHealth / 1000), myPlayer.getHPBarX() + 77, (myPlayer.getHPBarY() - 70) + 90 * myPlayer.getHPBarScale());
-            }
+            renderPlayer(myPlayer);
         }
         if (!players.isEmpty()) {
             players.forEach((id, player) -> {
                 if (player.isVisible() && !id.equals(mySocketId)) {
 //                    batch.draw(player.getSprite(), player.getBody().getPosition().x * PPM - player.getSprite().getWidth() / 2, player.getBody().getPosition().y * PPM - player.getSprite().getHeight() / 2,  player.getSprite().getWidth() * 1.7f, player.getSprite().getHeight() * 1.7f);
-                    batch.draw(player.getSprite(), player.getBody().getPosition().x * PPM - player.getSprite().getWidth() / 2, player.getBody().getPosition().y * PPM - player.getSprite().getHeight() / 2);
-//                    player.getSprite().draw(batch);
-                    player.updateHpBar();
-                    player.getHpBarBackground().draw(batch);
-                    player.getHpBarDisplay().draw(batch);
-                    player.getHpBarBorder().draw(batch);
-                    if (player.totalHealth >= 10 * 1000) {
-                        font.draw(batch, String.format("%d k", (int) (player.currentHealth / 1000)) + " / " + String.format("%d k", (int) (player.totalHealth / 1000)), player.getHPBarX() + 83, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
-                    } else {
-                        font.draw(batch, String.format("%.1f k", player.currentHealth / 1000) + " / " + String.format("%.1f k", player.totalHealth / 1000), player.getHPBarX() + 77, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
-                    }
+                    renderPlayer(player);
                 }
-
             });
         }
         if(!towers.isEmpty()){
@@ -290,10 +269,22 @@ public class Application extends ApplicationAdapter {
             });
         }
         batch.setProjectionMatrix(camera.combined);
-
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
+    }
+
+    private void renderPlayer(Player player) {
+        batch.draw(player.getSprite(), player.getCenterX(), player.getCenterY());
+        player.updateHpBar();
+        player.getHpBarBackground().draw(batch);
+        player.getHpBarDisplay().draw(batch);
+        player.getHpBarBorder().draw(batch);
+        if (player.totalHealth >= 10 * 1000) {
+            font.draw(batch, String.format("%d k", (int) (player.currentHealth / 1000)) + " / " + String.format("%d k", (int) (player.totalHealth / 1000)), player.getHPBarX() + 83, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+        } else {
+            font.draw(batch, String.format("%.1f k", player.currentHealth / 1000) + " / " + String.format("%.1f k", player.totalHealth / 1000), player.getHPBarX() + 77, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+        }
     }
 
     private void update(float delta) {
