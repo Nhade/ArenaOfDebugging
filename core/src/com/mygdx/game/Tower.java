@@ -25,7 +25,6 @@ public class Tower {
     private boolean isAttacking;
     private float attackRange;
     private float detectionRange;
-    private World world;
     private boolean isPlayerInDetectionRange;
 
     public boolean isMainCastle;
@@ -33,7 +32,6 @@ public class Tower {
     public boolean isOver = false;
 
     public Tower(World world, float x, float y, float hp,float currentHp, boolean isMainCastle,Texture towerTexture ,Texture hpBarTexture) {
-        this.world = world;
         this.hp = hp;
         this.currentHp = hp;
         this.isMainCastle = isMainCastle;
@@ -124,17 +122,14 @@ public class Tower {
         return hpBar.HPBarBorder();
     }
 
-    /**/
     public float getHPBarScale() {
         return hpBar.hPBarScale();
     }
 
-    /**/
     public float getHPBarX() {
         return hpBar.getHealthBarX();
     }
 
-    /**/
     public float getHPBarY() {
         return hpBar.getHealthBarY();
     }

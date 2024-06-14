@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import static com.mygdx.game.Constant.*;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import org.w3c.dom.Text;
 
 public class Application extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -43,7 +41,6 @@ public class Application extends ApplicationAdapter {
     private Texture mapImg;
     private OrthographicCamera camera;
     private BitmapFont font;
-    private GlyphLayout glyphLayout;
 
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
 
@@ -61,33 +58,11 @@ public class Application extends ApplicationAdapter {
         Texture texture2 = new Texture("badlogic.jpg");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
-        //Creat tower object
+        // Create tower object
         Texture friendlyTower = new Texture("towerBlue.png");
         Texture enemyTower = new Texture("towerRed.png");
         // Create towers
-        towers.put("U1",new com.mygdx.game.Tower(world,799,3275,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("U2",new com.mygdx.game.Tower(world,709,6395,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("U3",new com.mygdx.game.Tower(world,770,8865,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("U4",new com.mygdx.game.Tower(world,2640,10845,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("U5",new com.mygdx.game.Tower(world,5220,10875,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("U6",new com.mygdx.game.Tower(world,8179,10845,20000,20000,false,enemyTower,enemyHpDisplay));
-
-        towers.put("M1",new com.mygdx.game.Tower(world,2600,2766,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("M2",new com.mygdx.game.Tower(world,2629,2765,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("M3",new com.mygdx.game.Tower(world,5000,5155,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("M4",new com.mygdx.game.Tower(world,6030,6335,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("M5",new com.mygdx.game.Tower(world,7380,7665,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("M6",new com.mygdx.game.Tower(world,8879,9035,20000,20000,false,enemyTower,enemyHpDisplay));
-
-        towers.put("D1",new com.mygdx.game.Tower(world,2820,906,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("D2",new com.mygdx.game.Tower(world,5590,866,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("D3",new com.mygdx.game.Tower(world,8470,925,20000,20000,false,friendlyTower,friendlyHpDisplay));
-        towers.put("D4",new com.mygdx.game.Tower(world,10899,3195,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("D5",new com.mygdx.game.Tower(world,10810,6036,20000,20000,false,enemyTower,enemyHpDisplay));
-        towers.put("D6",new com.mygdx.game.Tower(world,10700,8596,20000,20000,false,enemyTower,enemyHpDisplay));
-
-        towers.put("B",new com.mygdx.game.Tower(world,1559,1806,20000,20000,true,friendlyTower,friendlyHpDisplay));
-        towers.put("R",new com.mygdx.game.Tower(world,10199,10356,20000,20000,true,enemyTower,enemyHpDisplay));
+        initializeTowers(friendlyTower, friendlyHpDisplay, enemyTower, enemyHpDisplay);
 
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
@@ -222,6 +197,32 @@ public class Application extends ApplicationAdapter {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void initializeTowers(Texture friendlyTower, Texture friendlyHpDisplay, Texture enemyTower, Texture enemyHpDisplay) {
+        towers.put("U1", new Tower(world, 799, 3275, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U2", new Tower(world, 709, 6395, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U3", new Tower(world, 770, 8865, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U4", new Tower(world, 2640, 10845, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("U5", new Tower(world, 5220, 10875, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("U6", new Tower(world, 8179, 10845, 20000, 20000, false, enemyTower, enemyHpDisplay));
+
+        towers.put("M1", new Tower(world, 2600, 2766, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M2", new Tower(world, 2629, 2765, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M3", new Tower(world, 5000, 5155, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M4", new Tower(world, 6030, 6335, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("M5", new Tower(world, 7380, 7665, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("M6", new Tower(world, 8879, 9035, 20000, 20000, false, enemyTower, enemyHpDisplay));
+
+        towers.put("D1", new Tower(world, 2820, 906, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D2", new Tower(world, 5590, 866, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D3", new Tower(world, 8470, 925, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D4", new Tower(world, 10899, 3195, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("D5", new Tower(world, 10810, 6036, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("D6", new Tower(world, 10700, 8596, 20000, 20000, false, enemyTower, enemyHpDisplay));
+
+        towers.put("B", new Tower(world, 1559, 1806, 20000, 20000, true, friendlyTower, friendlyHpDisplay));
+        towers.put("R", new Tower(world, 10199, 10356, 20000, 20000, true, enemyTower, enemyHpDisplay));
     }
 
     private void handlePlayerUpdate(String socketId, Vector2 position, boolean isForced) {
