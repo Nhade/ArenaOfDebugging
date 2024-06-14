@@ -22,7 +22,7 @@ public class Player {
     public boolean dead = false;
     private HPBar hpBar;
 
-    public Player(World world, float x, float y, boolean friendly, Texture playerTexture, Texture hpBarTexture, float currentHealth, float totalHealth) {
+    public Player(World world, float x, float y, boolean friendly, Texture playerTexture, Texture hpBarTexture, float currentHealth, float totalHealth, boolean isSelf) {
         this.friendly = friendly;
         this.currentHealth = currentHealth;
         this.totalHealth = totalHealth;
@@ -34,7 +34,11 @@ public class Player {
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        if (isSelf) {
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+        } else {
+            bodyDef.type = BodyDef.BodyType.KinematicBody;
+        }
         bodyDef.position.set(x / PPM, y / PPM);
 
         body = world.createBody(bodyDef);

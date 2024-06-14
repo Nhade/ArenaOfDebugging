@@ -68,7 +68,7 @@ public class Application extends ApplicationAdapter {
         generator.dispose();
 
 
-        myPlayer = new Player(world, 1800, 7200, true, texture1, friendlyHpDisplay, 1000, 1000);
+        myPlayer = new Player(world, 300, 300, true, texture1, friendlyHpDisplay, 1000, 1000, true);
         // Initialize socket connection
         try {
             socket = IO.socket("http://localhost:3000");
@@ -98,9 +98,9 @@ public class Application extends ApplicationAdapter {
                             String playerId = playersIds.getString(i);
                             if (!ids.contains(playerId) && !playerId.equals(mySocketId)) {
                                 if (true) { // TODO: Change logic after we implement team
-                                    players.put(playerId, new Player(world, 0, 0, true, texture1, friendlyHpDisplay, 1000, 1000));
+                                    players.put(playerId, new Player(world, 0, 0, true, texture1, friendlyHpDisplay, 1000, 1000, false));
                                 } else {
-                                    players.put(playerId, new Player(world, 0, 0, true, texture1, enemyHpDisplay, 1000, 1000));
+                                    players.put(playerId, new Player(world, 0, 0, true, texture1, enemyHpDisplay, 1000, 1000, false));
                                 }
                                 ids.add(playerId);
                             }
@@ -223,9 +223,9 @@ public class Application extends ApplicationAdapter {
     }
 
     private void update(float delta) {
+        world.step(delta, 6, 2);
         handleInput(delta);
         updatePosition();
-        world.step(delta, 6, 2);
     }
 
     private void updatePosition() {
