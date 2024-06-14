@@ -28,6 +28,7 @@ import java.util.Objects;
 import static com.mygdx.game.Constant.*;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import org.w3c.dom.Text;
 
 public class Application extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -45,6 +46,8 @@ public class Application extends ApplicationAdapter {
     private BitmapFont font;
     private GlyphLayout glyphLayout;
 
+    private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -59,6 +62,34 @@ public class Application extends ApplicationAdapter {
         Texture texture2 = new Texture("badlogic.jpg");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
+        //Creat tower object
+        Texture friendlyTower = new Texture("towerBlue.png");
+        Texture enemyTower = new Texture("towerRed.png");
+        // Create towers
+        towers.put("U1",new com.mygdx.game.Tower(world,799,3275,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("U2",new com.mygdx.game.Tower(world,709,6395,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("U3",new com.mygdx.game.Tower(world,770,8865,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("U4",new com.mygdx.game.Tower(world,2640,10845,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("U5",new com.mygdx.game.Tower(world,5220,10875,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("U6",new com.mygdx.game.Tower(world,8179,10845,20000,20000,false,enemyTower,enemyHpDisplay));
+
+        towers.put("M1",new com.mygdx.game.Tower(world,2600,2766,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("M2",new com.mygdx.game.Tower(world,2629,2765,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("M3",new com.mygdx.game.Tower(world,5000,5155,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("M4",new com.mygdx.game.Tower(world,6030,6335,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("M5",new com.mygdx.game.Tower(world,7380,7665,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("M6",new com.mygdx.game.Tower(world,8879,9035,20000,20000,false,enemyTower,enemyHpDisplay));
+
+        towers.put("D1",new com.mygdx.game.Tower(world,2820,906,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("D2",new com.mygdx.game.Tower(world,5590,866,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("D3",new com.mygdx.game.Tower(world,8470,925,20000,20000,false,friendlyTower,friendlyHpDisplay));
+        towers.put("D4",new com.mygdx.game.Tower(world,10899,3195,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("D5",new com.mygdx.game.Tower(world,10810,6036,20000,20000,false,enemyTower,enemyHpDisplay));
+        towers.put("D6",new com.mygdx.game.Tower(world,10700,8596,20000,20000,false,enemyTower,enemyHpDisplay));
+
+        towers.put("B",new com.mygdx.game.Tower(world,1559,1806,20000,20000,true,friendlyTower,friendlyHpDisplay));
+        towers.put("R",new com.mygdx.game.Tower(world,10199,10356,20000,20000,true,enemyTower,enemyHpDisplay));
+
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -152,6 +183,33 @@ public class Application extends ApplicationAdapter {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                }//ToDo:render the attackRange
+            }).on("towerUpdate", new Emitter.Listener() {
+                public void call(Object... args) {
+                    String socketId;
+                    float currentHealth;
+                    boolean isDestroyed;
+                    boolean isOver;
+                    try {
+                        JSONObject obj = (JSONObject) args[0];
+                        socketId = obj.getString("id");
+                        currentHealth = (float) obj.getDouble("health");
+                        isDestroyed = obj.getBoolean("destroyed");
+
+                        Tower tower = towers.get(socketId);
+                        tower.updateHP(currentHealth, tower.hp);
+                        if (isDestroyed) {
+                            tower.setDestroyed(true);
+                            if(tower.isMainCastle){
+                                tower.gameOver(true);
+                            }
+                        } else {
+                            tower.setDestroyed(false);
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 }
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
@@ -213,6 +271,22 @@ public class Application extends ApplicationAdapter {
                     }
                 }
 
+            });
+        }
+        if(!towers.isEmpty()){
+            towers.forEach((id, tower) -> {
+                if(!tower.destroyed){
+                    batch.draw(tower.getSprite(), tower.getBody().getPosition().x * PPM - tower.getSprite().getWidth() / 2, tower.getBody().getPosition().y * PPM - tower.getSprite().getHeight() / 2);
+                    tower.updateHpBar();
+                    tower.getHpBarBackground().draw(batch);
+                    tower.getHpBarDisplay().draw(batch);
+                    tower.getHpBarBorder().draw(batch);
+                    if (tower.hp >= 10 * 1000) {
+                        font.draw(batch, String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp/ 1000)),tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale());
+                    } else {
+                        font.draw(batch, String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000), tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale());
+                    }
+                }
             });
         }
         batch.setProjectionMatrix(camera.combined);
