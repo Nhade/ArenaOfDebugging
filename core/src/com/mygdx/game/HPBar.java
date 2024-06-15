@@ -23,7 +23,7 @@ public class HPBar {
     private Sprite barBorderSprite;
     private float multipleSize;
     private float scale;
-
+    private float offset = 0f;
 
     public HPBar(boolean friendly, float totalHealth, float multipleSize, Texture hpDisplaytexture) {
         this.friendly = friendly;
@@ -49,7 +49,7 @@ public class HPBar {
         region = new TextureRegion(hpDisplaytexture, 0, 0, filledSegments, (int) segmentHeight);
         HPSprite = new Sprite(region);
         HPSprite.setScale(1, scale);
-        HPSprite.setPosition((healthBarX + HEALTH_BAR_WIDTH / 2) - (HEALTH_BAR_WIDTH * multipleSize) / 2, (healthBarY - 70) + 70 * scale);
+        HPSprite.setPosition((healthBarX + HEALTH_BAR_WIDTH / 2) - (HEALTH_BAR_WIDTH * multipleSize) / 2, (healthBarY - 70) + 70 * scale + offset);
 
         return HPSprite;
     }
@@ -57,7 +57,7 @@ public class HPBar {
     public Sprite HPBarBackground() {
         backgroundTexture = new Texture("BarV1Background.png");
         backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setPosition(healthBarX, (healthBarY - 70) + 70 * scale);
+        backgroundSprite.setPosition(healthBarX, (healthBarY - 70) + 70 * scale + offset);
         backgroundSprite.setScale(multipleSize, scale);
         return backgroundSprite;
     }
@@ -65,7 +65,7 @@ public class HPBar {
     public Sprite HPBarBorder() {
         barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
         barBorderSprite = new Sprite(barBorderTexture);
-        barBorderSprite.setPosition(healthBarX - 2, (healthBarY - 70) + (70 * scale) - 2);
+        barBorderSprite.setPosition(healthBarX - 2, (healthBarY - 70) + (70 * scale) - 2 + offset);
         barBorderSprite.setScale(multipleSize, scale);
         return barBorderSprite;
     }
@@ -80,5 +80,13 @@ public class HPBar {
 
     public float getHealthBarY() {
         return healthBarY;
+    }
+
+    public float getOffset() {
+        return offset;
+    }
+
+    public void setOffset(float offset) {
+        this.offset = offset;
     }
 }

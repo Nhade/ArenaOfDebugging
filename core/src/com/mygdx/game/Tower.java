@@ -11,7 +11,7 @@ import static com.mygdx.game.Constant.PPM;
 
 public class Tower {
     private Body body;
-    private Texture towerTexture ;
+    private Texture towerTexture;
     private Texture attackRangeRedTexture = new Texture("attackRangeRed.png");
     private Texture attackRangeGreenTexture = new Texture("attackRangeGreen.png");
     private Sprite towerSprite;
@@ -31,7 +31,7 @@ public class Tower {
     public boolean destroyed = false;
     public boolean isOver = false;
 
-    public Tower(World world, float x, float y, float hp,float currentHp, boolean isMainCastle,Texture towerTexture ,Texture hpBarTexture) {
+    public Tower(World world, float x, float y, float hp, float currentHp, boolean isMainCastle, Texture towerTexture, Texture hpBarTexture) {
         this.hp = hp;
         this.currentHp = hp;
         this.isMainCastle = isMainCastle;
@@ -43,18 +43,18 @@ public class Tower {
 
         // Initialize HPBar
         this.hpBar = new HPBar(false, hp, 1f, hpBarTexture);
-
+        this.hpBar.setOffset(50f);
         // Load the tower texture
         towerSprite = new Sprite(towerTexture);
         towerSprite.setOriginCenter();
 
         // Load the attack range textures
         attackRangeGreenSprite = new Sprite(attackRangeGreenTexture);
-        attackRangeGreenSprite.setSize(detectionRange , detectionRange );
+        attackRangeGreenSprite.setSize(detectionRange, detectionRange);
         attackRangeGreenSprite.setOriginCenter();
 
         attackRangeRedSprite = new Sprite(attackRangeRedTexture);
-        attackRangeRedSprite.setSize(attackRange , attackRange );
+        attackRangeRedSprite.setSize(attackRange, attackRange);
         attackRangeRedSprite.setOriginCenter();
 
         // Define the body of the tower
@@ -101,7 +101,8 @@ public class Tower {
             isAttacking = false;
         }
     }
-    public void updateHP(float currentHp,float hp) {
+
+    public void updateHP(float currentHp, float hp) {
         this.currentHp = currentHp;
         this.hp = hp;
     }
@@ -110,6 +111,7 @@ public class Tower {
         hpBar.updatePosition(body.getPosition().x * PPM, body.getPosition().y * PPM);
         hpBar.updateHealth(currentHp, hp);
     }
+
     public Sprite getHpBarDisplay() {
         return hpBar.HPBarDisplay();
     }
@@ -166,9 +168,15 @@ public class Tower {
     public Body getBody() {
         return body;
     }
+
+    public float getHPBarOffset(){
+        return hpBar.getOffset();
+    }
+
     public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
     }
+
     public void gameOver(boolean gameOver) {
         this.isOver = true;
     }

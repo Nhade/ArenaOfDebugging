@@ -174,7 +174,7 @@ public class Application extends ApplicationAdapter {
                         tower.updateHP(currentHealth, tower.hp);
                         if (isDestroyed) {
                             tower.setDestroyed(true);
-                            if(tower.isMainCastle){
+                            if (tower.isMainCastle) {
                                 tower.gameOver(true);
                             }
                         } else {
@@ -253,18 +253,18 @@ public class Application extends ApplicationAdapter {
                 }
             });
         }
-        if(!towers.isEmpty()){
+        if (!towers.isEmpty()) {
             towers.forEach((id, tower) -> {
-                if(!tower.destroyed){
+                if (!tower.destroyed) {
                     batch.draw(tower.getSprite(), tower.getBody().getPosition().x * PPM - tower.getSprite().getWidth() / 2, tower.getBody().getPosition().y * PPM - tower.getSprite().getHeight() / 2);
                     tower.updateHpBar();
                     tower.getHpBarBackground().draw(batch);
                     tower.getHpBarDisplay().draw(batch);
                     tower.getHpBarBorder().draw(batch);
                     if (tower.hp >= 10 * 1000) {
-                        font.draw(batch, String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp/ 1000)),tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale());
+                        font.draw(batch, String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp / 1000)), tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
                     } else {
-                        font.draw(batch, String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000), tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale());
+                        font.draw(batch, String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000), tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
                     }
                 }
             });

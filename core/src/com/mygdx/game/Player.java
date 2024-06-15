@@ -99,6 +99,10 @@ public class Player {
         return hpBar.getHealthBarY();
     }
 
+    public float getHPBarOffset(){
+        return hpBar.getOffset();
+    }
+
     public Body getBody() {
         return body;
     }
