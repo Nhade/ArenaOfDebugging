@@ -207,12 +207,12 @@ public class Application extends ApplicationAdapter {
         towers.put("U5", new Tower(world, 5220, 10875, 20000, 20000, false, enemyTower, enemyHpDisplay));
         towers.put("U6", new Tower(world, 8179, 10845, 20000, 20000, false, enemyTower, enemyHpDisplay));
 
-        towers.put("M1", new Tower(world, 2600, 2766, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("M2", new Tower(world, 2629, 2765, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("M3", new Tower(world, 5000, 5155, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("M4", new Tower(world, 6030, 6335, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("M5", new Tower(world, 7380, 7665, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("M6", new Tower(world, 8879, 9035, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("M1", new Tower(world, 2660, 2700, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M2", new Tower(world,3890 ,3920 , 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M3", new Tower(world, 5110, 5090, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("M4", new Tower(world, 6160, 6120, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("M5", new Tower(world, 7460, 7350, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("M6", new Tower(world, 8820, 8810, 20000, 20000, false, enemyTower, enemyHpDisplay));
 
         towers.put("D1", new Tower(world, 2820, 906, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
         towers.put("D2", new Tower(world, 5590, 866, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
