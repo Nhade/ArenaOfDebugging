@@ -19,7 +19,6 @@ public class Tower {
     private Sprite towerSprite;
     private Sprite attackRangeGreenSprite;
     private Sprite attackRangeRedSprite;
-    private SpriteBatch batch = new SpriteBatch();
     private HPBar hpBar;
 
     public float hp;
@@ -72,12 +71,12 @@ public class Tower {
         bodyDef.type = BodyDef.BodyType.StaticBody;
         body = world.createBody(bodyDef);
 
-        // Define the shape of the tower as an octagon
+        // Define the shape of the tower as a hexagon
         PolygonShape shape = new PolygonShape();
-        Vector2[] vertices = new Vector2[8];
-        float radius = (towerSprite.getWidth()) / (2f * (float) Math.cos(Math.toRadians(22.5)) * PPM);
-        for (int i = 0; i < 8; i++) {
-            double angle = Math.toRadians((i * 45) - 22.5); // Offset by 22.5 degrees for an even distribution
+        Vector2[] vertices = new Vector2[6];
+        float radius = (towerSprite.getWidth()) / (2f * PPM); // Adjust the angle for a hexagon
+        for (int i = 0; i < 6; i++) {
+            double angle = Math.toRadians(i * 60); // 60 degrees for each segment of the hexagon
             vertices[i] = new Vector2((float) Math.cos(angle) * radius, (float) Math.sin(angle) * radius);
         }
         shape.set(vertices);
@@ -149,7 +148,6 @@ public class Tower {
     }
 
     public void dispose() {
-        batch.dispose();
         towerSprite.getTexture().dispose();
         towerTexture.dispose();
         attackRangeGreenTexture.dispose();

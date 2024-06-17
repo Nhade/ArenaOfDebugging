@@ -43,6 +43,7 @@ public class Application extends ApplicationAdapter {
     private BitmapFont font;
 
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
+    private HashMap<String,Buff> buffs = new HashMap<>();
 
     @Override
     public void create() {
@@ -58,10 +59,11 @@ public class Application extends ApplicationAdapter {
         Texture texture2 = new Texture("badlogic.jpg");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
-        Texture friendlyTower = new Texture("towerBlue.png");
-        Texture enemyTower = new Texture("towerRed.png");
         // Create towers
-        initializeTowers(friendlyTower, friendlyHpDisplay, enemyTower, enemyHpDisplay);
+        initializeTowers(friendlyHpDisplay, enemyHpDisplay);
+
+        //Creat buffs
+        initializeBuffs(friendlyHpDisplay,enemyHpDisplay);
 
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
@@ -184,6 +186,24 @@ public class Application extends ApplicationAdapter {
                     }
 
                 }
+            }).on("buffUpdate", new Emitter.Listener() {
+                public void call(Object... args) {
+                    String socketId;
+                    float currentHealth;
+                    boolean isDead;
+                    try {
+                        JSONObject obj = (JSONObject) args[0];
+                        socketId = obj.getString("id");
+                        currentHealth = (float) obj.getDouble("health");
+                        isDead = obj.getBoolean("dead");
+
+                        Buff buff = buffs.get(socketId);
+                        buff.updateHP(currentHealth, buff.hp);
+                        buff.setDead(isDead);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
@@ -198,7 +218,14 @@ public class Application extends ApplicationAdapter {
         }
     }
 
-    private void initializeTowers(Texture friendlyTower, Texture friendlyHpDisplay, Texture enemyTower, Texture enemyHpDisplay) {
+    private void initializeBuffs(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
+        buffs.put("AB",new Buff(world,2719,5245,10000,10000,true,friendlyHpDisplay));
+        buffs.put("AR",new Buff(world,5559,2856,10000,10000,false,enemyHpDisplay));
+        buffs.put("BB",new Buff(world,8829,6555,10000,10000,true,friendlyHpDisplay));
+        buffs.put("BR",new Buff(world,5740,8885,10000,10000,false,enemyHpDisplay));
+    }
+
+    private void initializeTowers(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
         towers.put("U1", new Tower(world, 839, 3006, 20000, 20000, false, true, friendlyHpDisplay));
         towers.put("U2", new Tower(world, 909, 5855, 20000, 20000, false, true, friendlyHpDisplay));
         towers.put("U3", new Tower(world, 1010, 8806, 20000, 20000, false, true, friendlyHpDisplay));
@@ -240,6 +267,8 @@ public class Application extends ApplicationAdapter {
         batch.draw(mapImg, 0, 0);
         camera.position.set(myPlayer.getBody().getPosition().x * PPM, myPlayer.getBody().getPosition().y * PPM, 0);
         camera.update();
+        updateAndRenderTowers(myPlayer.getBody().getPosition()); // Call the new combined method here
+        updateAndRenderBuffs(myPlayer.getBody().getPosition());
         if (!myPlayer.isDead()) {
             renderPlayer(myPlayer);
         }
@@ -250,11 +279,53 @@ public class Application extends ApplicationAdapter {
                 }
             });
         }
-        updateAndRenderTowers(myPlayer.getBody().getPosition()); // Call the new combined method here
+
         batch.setProjectionMatrix(camera.combined);
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
+    }
+
+    private void updateAndRenderBuffs(Vector2 position) {
+        if (!buffs.isEmpty()) {
+            buffs.forEach((id, buff) -> {
+                if (!buff.isDead) {
+                    float distanceToPlayer = buff.getBody().getPosition().dst(position);
+                    if (distanceToPlayer < buff.getAttackRange()) {
+                        buff.setAttacking(true);
+                    } else {
+                       buff.setAttacking(false);
+                    }
+
+                    // Render buff attack range
+                    if (buff.isAttacking()) {
+                        buff.getAttackRangeSprite().setPosition(
+                                buff.getBody().getPosition().x * PPM - buff.getAttackRangeSprite().getWidth() / 2,
+                                buff.getBody().getPosition().y * PPM - buff.getAttackRangeSprite().getHeight() / 2
+                        );
+                        buff.getAttackRangeSprite().draw(batch);
+                    }
+
+                    // Render buff
+                    batch.draw(buff.getSprite(),
+                            buff.getBody().getPosition().x * PPM - buff.getSprite().getWidth() / 2,
+                            buff.getBody().getPosition().y * PPM - buff.getSprite().getHeight() / 2);
+
+                    // Render HP bar
+                    buff.updateHpBar();
+                    buff.getHpBarBackground().draw(batch);
+                    buff.getHpBarDisplay().draw(batch);
+                    buff.getHpBarBorder().draw(batch);
+                    if (buff.hp >= 10 * 1000) {
+                        font.draw(batch, String.format("%d k", (int) (buff.currentHp / 1000)) + " / " + String.format("%d k", (int) (buff.hp / 1000)),
+                                buff.getHPBarX() + 83, (buff.getHPBarY() - 70) + 90 * buff.getHPBarScale() + buff.getHPBarOffset());
+                    } else {
+                        font.draw(batch, String.format("%.1f k", buff.currentHp / 1000) + " / " + String.format("%.1f k", buff.hp / 1000),
+                                buff.getHPBarX() + 77, (buff.getHPBarY() - 70) + 90 * buff.getHPBarScale() + buff.getHPBarOffset());
+                    }
+                }
+            });
+        }
     }
 
 
