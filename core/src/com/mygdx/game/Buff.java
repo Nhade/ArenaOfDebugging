@@ -34,9 +34,9 @@ public class Buff {
         this.attackRange = 14; // Example range, adjust as needed
         this.isAttacking = false;
 
-        if(isBlue) {
+        if (isBlue) {
             this.buffTexture = blueBuff;
-        }else{
+        } else {
             this.buffTexture = redBuff;
         }
 
@@ -118,7 +118,7 @@ public class Buff {
         return body;
     }
 
-    public float getHPBarOffset(){
+    public float getHPBarOffset() {
         return hpBar.getOffset();
     }
 

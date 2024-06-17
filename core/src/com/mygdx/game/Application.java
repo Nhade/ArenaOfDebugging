@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -48,6 +49,9 @@ public class Application extends ApplicationAdapter {
     private OrthographicCamera camera;
     private BitmapFont font;
     private String myTeam;
+    private BitmapFont progressBarFont;
+    private ProgressBar progressBar;
+    private TextureRegion progressBarRegion;
 
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
     private HashMap<String, Buff> buffs = new HashMap<>();
@@ -66,7 +70,7 @@ public class Application extends ApplicationAdapter {
         debugRenderer = new Box2DDebugRenderer();
         Texture texture1 = new Texture("character170px.png");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
-        Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
+        Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBar.png");
         // Create towers
         initializeTowers(friendlyHpDisplay, enemyHpDisplay);
 
@@ -76,13 +80,19 @@ public class Application extends ApplicationAdapter {
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 24;
         parameter.color = Color.WHITE;
+        parameter2.size = 24;
+        parameter2.color = Color.BLACK;
         font = generator.generateFont(parameter);
+        progressBarFont = generator.generateFont(parameter2);
         generator.dispose();
 
 
         myPlayer = new Player(world, 550, 550, true, texture1, friendlyHpDisplay, 1000, 1000, true);
+        // Create ProgressBar
+        progressBar = new ProgressBar(false, 8f);
         // Initialize socket connection
         try {
             socket = IO.socket("http://localhost:3000");
@@ -285,6 +295,11 @@ public class Application extends ApplicationAdapter {
                 }
             });
         }
+        if (progressBar.getIsKeyPressed()) {
+            progressBarFont.draw(batch, "RECALL", myPlayer.getHPBarX() + 100, myPlayer.getHPBarY() - 220);
+            batch.draw(progressBar.progressBarBackground(), myPlayer.getHPBarX(), myPlayer.getHPBarY() - 200);
+            batch.draw(progressBarRegion, myPlayer.getHPBarX(), myPlayer.getHPBarY() - 200);
+        }
 
         batch.setProjectionMatrix(camera.combined);
         batch.draw(filter, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
@@ -441,15 +456,23 @@ public class Application extends ApplicationAdapter {
         velocity.y = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.y += speed * delta;
+            progressBar.setIsKeyPressed(false);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             velocity.y -= speed * delta;
+            progressBar.setIsKeyPressed(false);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x -= speed * delta;
+            progressBar.setIsKeyPressed(false);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x += speed * delta;
+            progressBar.setIsKeyPressed(false);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+            progressBar.setIsKeyPressed(true);
+            progressBar.setTimeElapsed(0f);// Reset the progress bar each time space is pressed
         }
 
         if (velocity.len() > 0) {
@@ -459,6 +482,10 @@ public class Application extends ApplicationAdapter {
             myPlayer.getBody().setLinearVelocity(0, 0);
         }
 
+        // Progress Bar
+        if (progressBar.getIsKeyPressed()) {
+            progressBarRegion = progressBar.progressBarDisplay(delta);
+        }
         // Attack
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             long currentTime = System.currentTimeMillis();
