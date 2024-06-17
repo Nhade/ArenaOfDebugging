@@ -200,12 +200,12 @@ public class Application extends ApplicationAdapter {
     }
 
     private void initializeTowers(Texture friendlyTower, Texture friendlyHpDisplay, Texture enemyTower, Texture enemyHpDisplay) {
-        towers.put("U1", new Tower(world, 799, 3275, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("U2", new Tower(world, 709, 6395, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("U3", new Tower(world, 770, 8865, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("U4", new Tower(world, 2640, 10845, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("U5", new Tower(world, 5220, 10875, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("U6", new Tower(world, 8179, 10845, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("U1", new Tower(world, 839, 3006, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U2", new Tower(world, 909, 5855, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U3", new Tower(world, 1010, 8806, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("U4", new Tower(world, 2999, 10516, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("U5", new Tower(world, 5700, 10556, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("U6", new Tower(world, 8360, 10576, 20000, 20000, false, enemyTower, enemyHpDisplay));
 
         towers.put("M1", new Tower(world, 2660, 2700, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
         towers.put("M2", new Tower(world,3890 ,3920 , 20000, 20000, false, friendlyTower, friendlyHpDisplay));
@@ -214,12 +214,12 @@ public class Application extends ApplicationAdapter {
         towers.put("M5", new Tower(world, 7460, 7350, 20000, 20000, false, enemyTower, enemyHpDisplay));
         towers.put("M6", new Tower(world, 8820, 8810, 20000, 20000, false, enemyTower, enemyHpDisplay));
 
-        towers.put("D1", new Tower(world, 2820, 906, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("D2", new Tower(world, 5590, 866, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("D3", new Tower(world, 8470, 925, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
-        towers.put("D4", new Tower(world, 10899, 3195, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("D5", new Tower(world, 10810, 6036, 20000, 20000, false, enemyTower, enemyHpDisplay));
-        towers.put("D6", new Tower(world, 10700, 8596, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("D1", new Tower(world, 3010, 835, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D2", new Tower(world, 5960, 915, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D3", new Tower(world, 8690, 1005, 20000, 20000, false, friendlyTower, friendlyHpDisplay));
+        towers.put("D4", new Tower(world, 10639, 2936, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("D5", new Tower(world, 10689, 6094, 20000, 20000, false, enemyTower, enemyHpDisplay));
+        towers.put("D6", new Tower(world, 10749, 8335, 20000, 20000, false, enemyTower, enemyHpDisplay));
 
         towers.put("B", new Tower(world, 1559, 1806, 20000, 20000, true, friendlyTower, friendlyHpDisplay));
         towers.put("R", new Tower(world, 10199, 10356, 20000, 20000, true, enemyTower, enemyHpDisplay));

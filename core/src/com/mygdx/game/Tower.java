@@ -35,8 +35,8 @@ public class Tower {
         this.hp = hp;
         this.currentHp = hp;
         this.isMainCastle = isMainCastle;
-        this.attackRange = 530; // Example range, adjust as needed
-        this.detectionRange = 550; // Example range, adjust as needed
+        this.attackRange = 20; // Example range, adjust as needed
+        this.detectionRange = 26; // Example range, adjust as needed
         this.isAttacking = false;
         this.isPlayerInDetectionRange = false;
         this.towerTexture = towerTexture;
@@ -50,11 +50,11 @@ public class Tower {
 
         // Load the attack range textures
         attackRangeGreenSprite = new Sprite(attackRangeGreenTexture);
-        attackRangeGreenSprite.setSize(detectionRange, detectionRange);
+        attackRangeGreenSprite.scale(1.25f);
         attackRangeGreenSprite.setOriginCenter();
 
         attackRangeRedSprite = new Sprite(attackRangeRedTexture);
-        attackRangeRedSprite.setSize(attackRange, attackRange);
+        attackRangeRedSprite.scale(1.25f);
         attackRangeRedSprite.setOriginCenter();
 
         // Define the body of the tower
