@@ -47,6 +47,7 @@ public class Application extends ApplicationAdapter {
     private Texture filter;
     private OrthographicCamera camera;
     private BitmapFont font;
+    private String myTeam;
 
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
     private HashMap<String, Buff> buffs = new HashMap<>();
@@ -93,24 +94,22 @@ public class Application extends ApplicationAdapter {
                     mySocketId = socket.id();
                     players.put(mySocketId, myPlayer);
                     JSONObject data = new JSONObject();
-                    try {
-                        data.put("player", "myPlayer");
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    socket.emit("joinGame", data);
                 }
             }).on("playerJoin", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    JSONObject obj = (JSONObject) args[0];
                     try {
+                        JSONObject obj = (JSONObject) args[0];
                         JSONObject playersObj = (JSONObject) obj.get("players");
+                        if (myTeam == null) {
+                            myTeam = playersObj.getJSONObject(mySocketId).getString("team");
+                        }
                         JSONArray playersIds = playersObj.names();
                         for (int i = 0; i < playersIds.length(); i++) {
                             String playerId = playersIds.getString(i);
+                            String playerTeam = playersObj.getJSONObject(playerId).getString("team");
                             if (!ids.contains(playerId) && !playerId.equals(mySocketId)) {
-                                if (false) { // TODO: Change logic after we implement team
+                                if (playerTeam.equals(myTeam)) {
                                     players.put(playerId, new Player(world, 0, 0, true, texture1, friendlyHpDisplay, 1000, 1000, false));
                                 } else {
                                     players.put(playerId, new Player(world, 0, 0, false, texture1, enemyHpDisplay, 1000, 1000, false));
