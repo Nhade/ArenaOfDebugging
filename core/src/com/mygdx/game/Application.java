@@ -72,7 +72,7 @@ public class Application extends ApplicationAdapter {
         generator.dispose();
 
 
-        myPlayer = new Player(world, 300, 300, true, texture1, friendlyHpDisplay, 1000, 1000, true);
+        myPlayer = new Player(world, 550, 550, true, texture1, friendlyHpDisplay, 1000, 1000, true);
         // Initialize socket connection
         try {
             socket = IO.socket("http://localhost:3000");

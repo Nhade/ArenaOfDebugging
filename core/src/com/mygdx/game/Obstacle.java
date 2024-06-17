@@ -9,6 +9,7 @@ import static com.mygdx.game.Constant.PPM;
 
 public class Obstacle {
     ArrayList<Vector2[]> verticesArray = new ArrayList<>();
+    ArrayList<Vector2[]> boundaryVerticesArray = new ArrayList<>();
 
         Vector2[] vertices1 = new Vector2[]{
                 new Vector2(1379, 2913),
@@ -523,6 +524,62 @@ public class Obstacle {
                 new Vector2(8289, 10277),
                 new Vector2(8267, 9449)
         };
+        Vector2[] Bvertices1 = new Vector2[]{
+                new Vector2(1597, 432),
+                new Vector2(1086, 251)
+        };
+        Vector2[] Bvertices2 = new Vector2[]{
+                new Vector2(1086, 251),
+                new Vector2(474, 449)
+        };
+        Vector2[] Bvertices3 = new Vector2[]{
+                new Vector2(474, 449),
+                new Vector2(281, 1079)
+        };
+        Vector2[] Bvertices4 = new Vector2[]{
+                new Vector2(281, 1079),
+                new Vector2(474, 1527)
+        };
+        Vector2[] Bvertices5 = new Vector2[]{
+                new Vector2(474, 1527),
+                new Vector2(481, 9883)
+        };
+        Vector2[] Bvertices6 = new Vector2[]{
+                new Vector2(481, 9883),
+                new Vector2(1590, 10976)
+        };
+        Vector2[] Bvertices7 = new Vector2[]{
+                new Vector2(1590, 10976),
+                new Vector2(10022, 10970)
+        };
+        Vector2[] Bvertices8 = new Vector2[]{
+                new Vector2(10022, 10970),
+                new Vector2(10519, 11151)
+        };
+        Vector2[] Bvertices9 = new Vector2[]{
+                new Vector2(10519, 11151),
+                new Vector2(11131, 10968)
+        };
+        Vector2[] Bvertices10 = new Vector2[]{
+                new Vector2(11131, 10968),
+                new Vector2(11327, 10346)
+        };
+        Vector2[] Bvertices11 = new Vector2[]{
+                new Vector2(11327, 10346),
+                new Vector2(11132, 9926)
+        };
+        Vector2[] Bvertices12 = new Vector2[]{
+                new Vector2(11132, 9926),
+                new Vector2(11145, 1599)
+        };
+        Vector2[] Bvertices13 = new Vector2[]{
+                new Vector2(11145, 1599),
+                new Vector2(9981, 449)
+        };
+        Vector2[] Bvertices14 = new Vector2[]{
+                new Vector2(9981, 449),
+                new Vector2(1597, 432)
+        };
 
     public Obstacle(World world) {
         verticesArray.add(vertices1);
@@ -615,6 +672,22 @@ public class Obstacle {
         verticesArray.add(vertices37);
         verticesArray.add(vertices38);
 
+        boundaryVerticesArray.add(Bvertices1);
+        boundaryVerticesArray.add(Bvertices2);
+        boundaryVerticesArray.add(Bvertices3);
+        boundaryVerticesArray.add(Bvertices4);
+        boundaryVerticesArray.add(Bvertices5);
+        boundaryVerticesArray.add(Bvertices6);
+        boundaryVerticesArray.add(Bvertices7);
+        boundaryVerticesArray.add(Bvertices8);
+        boundaryVerticesArray.add(Bvertices9);
+        boundaryVerticesArray.add(Bvertices10);
+        boundaryVerticesArray.add(Bvertices11);
+        boundaryVerticesArray.add(Bvertices12);
+        boundaryVerticesArray.add(Bvertices13);
+        boundaryVerticesArray.add(Bvertices14);
+
+
         for (Vector2[] vertices : verticesArray) {
             Vector2[] convertedVertices = new Vector2[vertices.length];
             for (int i = 0; i < vertices.length; i++) {
@@ -639,6 +712,32 @@ public class Obstacle {
 
             body.createFixture(fixtureDef);
             poly.dispose();
+        }
+
+        for (Vector2[] vertices : boundaryVerticesArray) {
+            Vector2[] boundaryConvertedVertices = new Vector2[vertices.length];
+            for (int i = 0; i < vertices.length; i++) {
+                boundaryConvertedVertices[i] = vertices[i].scl(1 / PPM);
+            }
+            // Create and configure body
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+            bodyDef.position.set(0, 0);
+
+            Body body = world.createBody(bodyDef);
+
+            // Create and configure fixture (collision functionality)
+            EdgeShape edge = new EdgeShape();
+            edge.set(boundaryConvertedVertices[0], boundaryConvertedVertices[1]);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = edge;
+            fixtureDef.density = 1.0f;
+            fixtureDef.friction = 0.5f;
+            fixtureDef.restitution = 0.5f;
+
+            body.createFixture(fixtureDef);
+            edge.dispose();
         }
     }
 }
