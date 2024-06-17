@@ -48,7 +48,7 @@ public class Application extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         // Create map and camera follower
-        mapImg = new Texture("FinalProjectGameMap.kra-autosave.png");
+        mapImg = new Texture("FinalProjectGameMap.png");
         camera = new OrthographicCamera(WINDOW_WIDTH * 1.5f, WINDOW_HEIGHT * 1.5f);
         // Create player object
         world = new World(new Vector2(0, 0), true);
