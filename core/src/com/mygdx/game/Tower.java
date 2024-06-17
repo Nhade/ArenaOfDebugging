@@ -83,7 +83,7 @@ public class Tower {
         shape.dispose();
     }
 
-    //ToDO: conbine this method to server
+    //TODO: conbine this method to server
     public void update(Vector2 playerPosition, String playerId) {
         float distanceToPlayer = body.getPosition().dst(playerPosition);
 //        System.out.println("distanceToPlayer: " + distanceToPlayer);

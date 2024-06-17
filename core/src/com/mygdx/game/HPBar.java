@@ -31,6 +31,11 @@ public class HPBar {
         this.multipleSize = multipleSize;
         this.hpDisplaytexture = hpDisplaytexture;
         this.scale = (float) (0.75 + multipleSize / 4);
+
+        this.barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
+        this.barBorderSprite = new Sprite(barBorderTexture);
+        this.backgroundTexture = new Texture("BarV1Background.png");
+        this.backgroundSprite = new Sprite(backgroundTexture);
     }
 
     public void updateHealth(float currentHealth, float totalHealth) {
@@ -55,16 +60,12 @@ public class HPBar {
     }
 
     public Sprite HPBarBackground() {
-        backgroundTexture = new Texture("BarV1Background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setPosition(healthBarX, (healthBarY - 70) + 70 * scale + offset);
         backgroundSprite.setScale(multipleSize, scale);
         return backgroundSprite;
     }
 
     public Sprite HPBarBorder() {
-        barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
-        barBorderSprite = new Sprite(barBorderTexture);
         barBorderSprite.setPosition(healthBarX - 2, (healthBarY - 70) + (70 * scale) - 2 + offset);
         barBorderSprite.setScale(multipleSize, scale);
         return barBorderSprite;

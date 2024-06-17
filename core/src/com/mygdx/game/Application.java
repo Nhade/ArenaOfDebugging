@@ -261,15 +261,19 @@ public class Application extends ApplicationAdapter {
                     tower.getHpBarBackground().draw(batch);
                     tower.getHpBarDisplay().draw(batch);
                     tower.getHpBarBorder().draw(batch);
+                    String hpString;
                     if (tower.hp >= 10 * 1000) {
-                        font.draw(batch, String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp / 1000)), tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
+                        hpString = String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp / 1000));
+                        font.draw(batch, hpString, tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
                     } else {
-                        font.draw(batch, String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000), tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
+                        hpString = String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000);
+                        font.draw(batch, hpString, tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
                     }
                 }
             });
         }
         batch.setProjectionMatrix(camera.combined);
+
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
@@ -349,5 +353,6 @@ public class Application extends ApplicationAdapter {
             socket.disconnect();
             socket.close();
         }
+        font.dispose();
     }
 }
