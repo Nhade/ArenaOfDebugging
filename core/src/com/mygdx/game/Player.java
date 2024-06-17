@@ -8,6 +8,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static com.mygdx.game.Constant.PPM;
 
 public class Player {
@@ -18,7 +21,7 @@ public class Player {
     float currentHealth;
     float totalHealth;
     private float playerX, playerY;
-    private float lastAttackTime;
+    private long lastAttackTime;
     public boolean dead = false;
     private HPBar hpBar;
 
@@ -117,6 +120,14 @@ public class Player {
 
     public float getCenterY() {
         return playerY * PPM - sprite.getHeight() / 2;
+    }
+
+    public long getLastAttackTime() {
+        return lastAttackTime;
+    }
+
+    public void setLastAttackTime(long lastAttackTime) {
+        this.lastAttackTime = lastAttackTime;
     }
 
     public void setPosition(float x, float y) {

@@ -15,8 +15,8 @@ public class HPBar {
     private float healthBarX;
     private float healthBarY;
     private Texture hpDisplaytexture;
-    private Texture backgroundTexture;
-    private Texture barBorderTexture;
+    private static Texture barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
+    private static Texture barBackgroundTexture = new Texture("BarV1Background.png");
     private TextureRegion region;
     private Sprite HPSprite;
     private Sprite backgroundSprite;
@@ -32,10 +32,8 @@ public class HPBar {
         this.hpDisplaytexture = hpDisplaytexture;
         this.scale = (float) (0.75 + multipleSize / 4);
 
-        this.barBorderTexture = new Texture("BarV1_ProgressBarBorder.png");
         this.barBorderSprite = new Sprite(barBorderTexture);
-        this.backgroundTexture = new Texture("BarV1Background.png");
-        this.backgroundSprite = new Sprite(backgroundTexture);
+        this.backgroundSprite = new Sprite(barBackgroundTexture);
     }
 
     public void updateHealth(float currentHealth, float totalHealth) {

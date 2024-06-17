@@ -58,7 +58,6 @@ public class Application extends ApplicationAdapter {
         Texture texture2 = new Texture("badlogic.jpg");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
-        // Create tower object
         Texture friendlyTower = new Texture("towerBlue.png");
         Texture enemyTower = new Texture("towerRed.png");
         // Create towers
@@ -102,10 +101,10 @@ public class Application extends ApplicationAdapter {
                         for (int i = 0; i < playersIds.length(); i++) {
                             String playerId = playersIds.getString(i);
                             if (!ids.contains(playerId) && !playerId.equals(mySocketId)) {
-                                if (true) { // TODO: Change logic after we implement team
+                                if (false) { // TODO: Change logic after we implement team
                                     players.put(playerId, new Player(world, 0, 0, true, texture1, friendlyHpDisplay, 1000, 1000, false));
                                 } else {
-                                    players.put(playerId, new Player(world, 0, 0, true, texture1, enemyHpDisplay, 1000, 1000, false));
+                                    players.put(playerId, new Player(world, 0, 0, false, texture1, enemyHpDisplay, 1000, 1000, false));
                                 }
                                 ids.add(playerId);
                             }
@@ -157,7 +156,7 @@ public class Application extends ApplicationAdapter {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                }//ToDo:render the attackRange
+                }//TODO:render the attackRange
             }).on("towerUpdate", new Emitter.Listener() {
                 public void call(Object... args) {
                     String socketId;
@@ -357,29 +356,58 @@ public class Application extends ApplicationAdapter {
             myPlayer.getBody().setLinearVelocity(new Vector2(0, 0));
             return;
         }
+
+        // Movement
         float speed = 16f;
         Vector2 velocity = new Vector2();
         velocity.x = 0;
         velocity.y = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.y += speed * delta;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             velocity.y -= speed * delta;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x -= speed * delta;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x += speed * delta;
         }
 
-        // Normalize velocity to ensure consistent speed in all directions
         if (velocity.len() > 0) {
             velocity.nor().scl(speed);
             myPlayer.getBody().setLinearVelocity(velocity);
         } else {
             myPlayer.getBody().setLinearVelocity(0, 0);
+        }
+
+        // Attack
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            long currentTime = System.currentTimeMillis();
+            long lastAttackTime = myPlayer.getLastAttackTime();
+            if (currentTime - lastAttackTime > 600) {
+                myPlayer.setLastAttackTime(currentTime);
+                Vector2 playerPosition = new Vector2(myPlayer.getBody().getPosition().x, myPlayer.getBody().getPosition().y);
+                players.forEach((id, player) -> {
+                    if (!player.isVisible() || id.equals(mySocketId) || player.isFriendly()) {
+                        return;
+                    } else {
+                        System.out.println(player.getBody().getPosition().dst(playerPosition));
+                        if (player.getBody().getPosition().dst(playerPosition) <= 7.8) {
+                            JSONObject data = new JSONObject();
+                            try {
+                                data.put("targetId", id);
+                                data.put("attackId", 0);
+                                socket.emit("playerAttack", data);
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        }
+                    }
+                });
+            }
         }
     }
 
