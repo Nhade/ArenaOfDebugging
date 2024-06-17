@@ -49,7 +49,7 @@ public class Application extends ApplicationAdapter {
     private BitmapFont font;
 
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
-    private HashMap<String,Buff> buffs = new HashMap<>();
+    private HashMap<String, Buff> buffs = new HashMap<>();
 
     @Override
     public void create() {
@@ -70,7 +70,7 @@ public class Application extends ApplicationAdapter {
         initializeTowers(friendlyHpDisplay, enemyHpDisplay);
 
         //Creat buffs
-        initializeBuffs(friendlyHpDisplay,enemyHpDisplay);
+        initializeBuffs(friendlyHpDisplay, enemyHpDisplay);
 
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
@@ -226,10 +226,10 @@ public class Application extends ApplicationAdapter {
     }
 
     private void initializeBuffs(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
-        buffs.put("AB",new Buff(world,2719,5245,10000,10000,true,friendlyHpDisplay));
-        buffs.put("AR",new Buff(world,5559,2856,10000,10000,false,enemyHpDisplay));
-        buffs.put("BB",new Buff(world,8829,6555,10000,10000,true,friendlyHpDisplay));
-        buffs.put("BR",new Buff(world,5740,8885,10000,10000,false,enemyHpDisplay));
+        buffs.put("AB", new Buff(world, 2719, 5245, 10000, 10000, true, friendlyHpDisplay));
+        buffs.put("AR", new Buff(world, 5559, 2856, 10000, 10000, false, enemyHpDisplay));
+        buffs.put("BB", new Buff(world, 8829, 6555, 10000, 10000, true, friendlyHpDisplay));
+        buffs.put("BR", new Buff(world, 5740, 8885, 10000, 10000, false, enemyHpDisplay));
     }
 
     private void initializeTowers(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
@@ -240,8 +240,8 @@ public class Application extends ApplicationAdapter {
         towers.put("U5", new Tower(world, 5700, 10556, 20000, 20000, false, false, enemyHpDisplay));
         towers.put("U6", new Tower(world, 8360, 10576, 20000, 20000, false, false, enemyHpDisplay));
 
-        towers.put("M1", new Tower(world, 2660, 2700, 20000, 20000, false,true, friendlyHpDisplay));
-        towers.put("M2", new Tower(world,3890 ,3920 , 20000, 20000, false, true, friendlyHpDisplay));
+        towers.put("M1", new Tower(world, 2660, 2700, 20000, 20000, false, true, friendlyHpDisplay));
+        towers.put("M2", new Tower(world, 3890, 3920, 20000, 20000, false, true, friendlyHpDisplay));
         towers.put("M3", new Tower(world, 5110, 5090, 20000, 20000, false, true, friendlyHpDisplay));
         towers.put("M4", new Tower(world, 6160, 6120, 20000, 20000, false, false, enemyHpDisplay));
         towers.put("M5", new Tower(world, 7460, 7350, 20000, 20000, false, false, enemyHpDisplay));
@@ -288,7 +288,7 @@ public class Application extends ApplicationAdapter {
         }
 
         batch.setProjectionMatrix(camera.combined);
-        batch.draw(filter,camera.position.x-camera.viewportWidth/2, camera.position.y-camera.viewportHeight/2,camera.viewportWidth,camera.viewportHeight);
+        batch.draw(filter, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
@@ -302,7 +302,7 @@ public class Application extends ApplicationAdapter {
                     if (distanceToPlayer < buff.getAttackRange()) {
                         buff.setAttacking(true);
                     } else {
-                       buff.setAttacking(false);
+                        buff.setAttacking(false);
                     }
 
                     // Render buff attack range
@@ -396,7 +396,6 @@ public class Application extends ApplicationAdapter {
     }
 
 
-
     private void renderPlayer(Player player) {
         batch.draw(player.getSprite(), player.getCenterX(), player.getCenterY());
         player.updateHpBar();
@@ -404,9 +403,9 @@ public class Application extends ApplicationAdapter {
         player.getHpBarDisplay().draw(batch);
         player.getHpBarBorder().draw(batch);
         if (player.totalHealth >= 10 * 1000) {
-            font.draw(batch, String.format("%d k", (int) (player.currentHealth / 1000)) + " / " + String.format("%d k", (int) (player.totalHealth / 1000)), player.getHPBarX() + 83, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+            font.draw(batch, String.format("%d k", (int) (player.currentHealth / 1000)) + " / " + String.format("%d k", (int) (player.totalHealth / 1000)), player.getHPBarX() + 83, (player.getHPBarY() - 70) + 90 * player.getHPBarScale() + 50);
         } else {
-            font.draw(batch, String.format("%.1f k", player.currentHealth / 1000) + " / " + String.format("%.1f k", player.totalHealth / 1000), player.getHPBarX() + 77, (player.getHPBarY() - 70) + 90 * player.getHPBarScale());
+            font.draw(batch, String.format("%.1f k", player.currentHealth / 1000) + " / " + String.format("%.1f k", player.totalHealth / 1000), player.getHPBarX() + 77, (player.getHPBarY() - 70) + 90 * player.getHPBarScale() + 50);
         }
     }
 

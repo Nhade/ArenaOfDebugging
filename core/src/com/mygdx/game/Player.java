@@ -34,6 +34,7 @@ public class Player {
         playerX = x;
         playerY = y;
         hpBar = new HPBar(friendly, totalHealth, 1f, hpBarTexture);
+        this.hpBar.setOffset(50f);
 
         // Create and configure body
         BodyDef bodyDef = new BodyDef();
