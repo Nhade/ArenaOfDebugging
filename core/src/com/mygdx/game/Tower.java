@@ -12,8 +12,8 @@ import static com.mygdx.game.Constant.PPM;
 public class Tower {
     private Body body;
     private Texture towerTexture;
-    private Texture attackRangeRedTexture = new Texture("attackRangeRed.png");
-    private Texture attackRangeGreenTexture = new Texture("attackRangeGreen.png");
+    private Texture attackRangeRedTexture = new Texture("RedTowerRange530px4pxbold.png");
+    private Texture attackRangeGreenTexture = new Texture("GreenTowerRange530px4pxbold.png");
     Texture friendlyTower = new Texture("towerBlue.png");
     Texture enemyTower = new Texture("towerRed.png");
     private Sprite towerSprite;
