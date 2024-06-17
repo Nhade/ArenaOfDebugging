@@ -48,7 +48,7 @@ public class Player {
 
         // Create and configure fixture (collision functionality)
         CircleShape circle = new CircleShape();
-        circle.setRadius(50 / PPM); // Set to 50 to match our temporary player texture
+        circle.setRadius(50*1.7f / PPM); // Set to 50 to match our temporary player texture
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
@@ -61,7 +61,7 @@ public class Player {
 
         // Create the sprite
         sprite = new Sprite(playerTexture);
-        sprite.setSize(100, 100);//TODO: modified to be 170
+        //TODO: modified to be 170
         sprite.setOriginCenter();
 
         // Set sprite position to match the body's position

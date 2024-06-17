@@ -11,9 +11,9 @@ import static com.mygdx.game.Constant.PPM;
 public class Buff {
     private Body body;
     private Texture buffTexture;
-    private Texture attackRangeTexture = new Texture("attackRangeBuff.png");
-    Texture blueBuff = new Texture("BlueBuff.png");
-    Texture redBuff = new Texture("RedBuff.png");
+    private Texture attackRangeTexture = new Texture("buffAttackRange4pxbold.png");
+    Texture blueBuff = new Texture("BlueBuff200px.png");
+    Texture redBuff = new Texture("RedBuff200px.png");
     private Sprite buffSprite;
     private Sprite attackRangeSprite;
     private HPBar hpBar;
@@ -31,7 +31,7 @@ public class Buff {
         this.hp = hp;
         this.currentHp = hp;
         this.isBlue = isBlue;
-        this.attackRange = 20; // Example range, adjust as needed
+        this.attackRange = 14; // Example range, adjust as needed
         this.isAttacking = false;
 
         if(isBlue) {
@@ -50,7 +50,7 @@ public class Buff {
 
         // Load the attack range textures
         attackRangeSprite = new Sprite(attackRangeTexture);
-        attackRangeSprite.scale(1.25f);
+        attackRangeSprite.scale(0.4f);
         attackRangeSprite.setOriginCenter();
 
 

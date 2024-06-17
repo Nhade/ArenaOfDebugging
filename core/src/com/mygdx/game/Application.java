@@ -12,6 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -26,6 +30,7 @@ import java.util.HashMap;
 import static com.mygdx.game.Constant.*;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import org.w3c.dom.Text;
 
 public class Application extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -39,6 +44,7 @@ public class Application extends ApplicationAdapter {
     private String mySocketId;
     private ArrayList<String> ids = new ArrayList<>();
     private Texture mapImg;
+    private Texture filter;
     private OrthographicCamera camera;
     private BitmapFont font;
 
@@ -48,6 +54,8 @@ public class Application extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        //Create filter
+        filter = new Texture("camera-vignette.png");
         // Create map and camera follower
         mapImg = new Texture("FinalProjectGameMap.png");
         camera = new OrthographicCamera(WINDOW_WIDTH * 1.5f, WINDOW_HEIGHT * 1.5f);
@@ -55,8 +63,7 @@ public class Application extends ApplicationAdapter {
         world = new World(new Vector2(0, 0), true);
         obstacle = new Obstacle(world);
         debugRenderer = new Box2DDebugRenderer();
-        Texture texture1 = new Texture("circle_trans_100px.png");
-        Texture texture2 = new Texture("badlogic.jpg");
+        Texture texture1 = new Texture("character170px.png");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBarBorder.png");
         // Create towers
@@ -281,6 +288,7 @@ public class Application extends ApplicationAdapter {
         }
 
         batch.setProjectionMatrix(camera.combined);
+        batch.draw(filter,camera.position.x-camera.viewportWidth/2, camera.position.y-camera.viewportHeight/2,camera.viewportWidth,camera.viewportHeight);
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
@@ -348,7 +356,7 @@ public class Application extends ApplicationAdapter {
                     }
 
                     // Render attack range indicators
-                    if (tower.isPlayerInDetectionRange()) {
+                    if (tower.isPlayerInDetectionRange() && !tower.isAttacking()) {
                         tower.getAttackRangeGreenSprite().setPosition(
                                 tower.getBody().getPosition().x * PPM - tower.getAttackRangeGreenSprite().getWidth() / 2,
                                 tower.getBody().getPosition().y * PPM - tower.getAttackRangeGreenSprite().getHeight() / 2

@@ -15,7 +15,7 @@ public class Tower {
     private Texture attackRangeRedTexture = new Texture("RedTowerRange530px4pxbold.png");
     private Texture attackRangeGreenTexture = new Texture("GreenTowerRange530px4pxbold.png");
     Texture friendlyTower = new Texture("towerBlue.png");
-    Texture enemyTower = new Texture("towerRed.png");
+    Texture enemyTower = new Texture("towerRed220px.png");
     private Sprite towerSprite;
     private Sprite attackRangeGreenSprite;
     private Sprite attackRangeRedSprite;
