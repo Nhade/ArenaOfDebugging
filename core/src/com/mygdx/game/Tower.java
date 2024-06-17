@@ -14,6 +14,8 @@ public class Tower {
     private Texture towerTexture;
     private Texture attackRangeRedTexture = new Texture("attackRangeRed.png");
     private Texture attackRangeGreenTexture = new Texture("attackRangeGreen.png");
+    Texture friendlyTower = new Texture("towerBlue.png");
+    Texture enemyTower = new Texture("towerRed.png");
     private Sprite towerSprite;
     private Sprite attackRangeGreenSprite;
     private Sprite attackRangeRedSprite;
@@ -30,8 +32,9 @@ public class Tower {
     public boolean isMainCastle;
     public boolean destroyed = false;
     public boolean isOver = false;
+    public boolean isFriendly = false;
 
-    public Tower(World world, float x, float y, float hp, float currentHp, boolean isMainCastle, Texture towerTexture, Texture hpBarTexture) {
+    public Tower(World world, float x, float y, float hp, float currentHp, boolean isMainCastle, boolean isFriendly, Texture hpBarTexture) {
         this.hp = hp;
         this.currentHp = hp;
         this.isMainCastle = isMainCastle;
@@ -39,7 +42,13 @@ public class Tower {
         this.detectionRange = 26; // Example range, adjust as needed
         this.isAttacking = false;
         this.isPlayerInDetectionRange = false;
-        this.towerTexture = towerTexture;
+        this.isFriendly = isFriendly;
+        if(isFriendly) {
+            this.towerTexture = friendlyTower;
+        }else{
+            this.towerTexture = enemyTower;
+        }
+
 
         // Initialize HPBar
         this.hpBar = new HPBar(false, hp, 1f, hpBarTexture);
