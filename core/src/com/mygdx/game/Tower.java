@@ -83,25 +83,6 @@ public class Tower {
         shape.dispose();
     }
 
-    //TODO: conbine this method to server
-    public void update(Vector2 playerPosition, String playerId) {
-        float distanceToPlayer = body.getPosition().dst(playerPosition);
-//        System.out.println("distanceToPlayer: " + distanceToPlayer);
-        if (distanceToPlayer < detectionRange) {
-            isPlayerInDetectionRange = true;
-            render();
-        } else {
-            isPlayerInDetectionRange = false;
-        }
-
-        if (playerPosition.dst(body.getPosition()) < attackRange && !isAttacking) {
-            isAttacking = true;
-            render();
-        } else if (playerPosition.dst(body.getPosition()) >= attackRange) {
-            isAttacking = false;
-        }
-    }
-
     public void updateHP(float currentHp, float hp) {
         this.currentHp = currentHp;
         this.hp = hp;
@@ -136,30 +117,7 @@ public class Tower {
         return hpBar.getHealthBarY();
     }
 
-    public void render() {
-        batch.begin();
-        if (isPlayerInDetectionRange) {
-            attackRangeGreenSprite.setPosition(body.getPosition().x * PPM - attackRangeGreenSprite.getWidth() / 2,
-                    body.getPosition().y * PPM - attackRangeGreenSprite.getHeight() / 2);
-            attackRangeGreenSprite.draw(batch);
-        }
 
-        if (isAttacking) {
-            attackRangeRedSprite.setPosition(body.getPosition().x * PPM - attackRangeRedSprite.getWidth() / 2,
-                    body.getPosition().y * PPM - attackRangeRedSprite.getHeight() / 2);
-            attackRangeRedSprite.draw(batch);
-        }
-
-        batch.draw(towerSprite, body.getPosition().x * PPM - towerSprite.getWidth() / 2,
-                body.getPosition().y * PPM - towerSprite.getHeight() / 2);
-
-        // Draw HP Bar
-        batch.draw(hpBar.HPBarBackground(), hpBar.getHealthBarX(), hpBar.getHealthBarY());
-        batch.draw(hpBar.HPBarDisplay(), hpBar.getHealthBarX(), hpBar.getHealthBarY());
-        batch.draw(hpBar.HPBarBorder(), hpBar.getHealthBarX(), hpBar.getHealthBarY());
-
-        batch.end();
-    }
 
     public Sprite getSprite() {
         return towerSprite;
@@ -189,5 +147,42 @@ public class Tower {
         attackRangeRedTexture.dispose();
         attackRangeGreenSprite.getTexture().dispose();
         attackRangeRedSprite.getTexture().dispose();
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+
+    public float getDetectionRange() {
+        return detectionRange;
+    }
+
+    public void setPlayerInDetectionRange(boolean b) {
+        isPlayerInDetectionRange = b;
+    }
+
+    public float getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttacking(boolean b) {
+        isAttacking = b;
+    }
+
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+
+    public boolean isPlayerInDetectionRange() {
+        return isPlayerInDetectionRange;
+    }
+
+    public Sprite getAttackRangeGreenSprite() {
+        return attackRangeGreenSprite;
+    }
+
+    public Sprite getAttackRangeRedSprite() {
+        return attackRangeRedSprite;
     }
 }

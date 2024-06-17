@@ -242,42 +242,82 @@ public class Application extends ApplicationAdapter {
         camera.position.set(myPlayer.getBody().getPosition().x * PPM, myPlayer.getBody().getPosition().y * PPM, 0);
         camera.update();
         if (!myPlayer.isDead()) {
-//            batch.draw(myPlayer.getSprite(), myPlayer.getBody().getPosition().x * PPM - myPlayer.getSprite().getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - myPlayer.getSprite().getHeight() / 2,  myPlayer.getSprite().getWidth() * 1.7f,  myPlayer.getSprite().getHeight() * 1.7f);
             renderPlayer(myPlayer);
         }
         if (!players.isEmpty()) {
             players.forEach((id, player) -> {
                 if (player.isVisible() && !id.equals(mySocketId)) {
-//                    batch.draw(player.getSprite(), player.getBody().getPosition().x * PPM - player.getSprite().getWidth() / 2, player.getBody().getPosition().y * PPM - player.getSprite().getHeight() / 2,  player.getSprite().getWidth() * 1.7f, player.getSprite().getHeight() * 1.7f);
                     renderPlayer(player);
                 }
             });
         }
-        if (!towers.isEmpty()) {
-            towers.forEach((id, tower) -> {
-                if (!tower.destroyed) {
-                    batch.draw(tower.getSprite(), tower.getBody().getPosition().x * PPM - tower.getSprite().getWidth() / 2, tower.getBody().getPosition().y * PPM - tower.getSprite().getHeight() / 2);
-                    tower.updateHpBar();
-                    tower.getHpBarBackground().draw(batch);
-                    tower.getHpBarDisplay().draw(batch);
-                    tower.getHpBarBorder().draw(batch);
-                    String hpString;
-                    if (tower.hp >= 10 * 1000) {
-                        hpString = String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp / 1000));
-                        font.draw(batch, hpString, tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
-                    } else {
-                        hpString = String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000);
-                        font.draw(batch, hpString, tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
-                    }
-                }
-            });
-        }
+        updateAndRenderTowers(myPlayer.getBody().getPosition()); // Call the new combined method here
         batch.setProjectionMatrix(camera.combined);
-
         batch.end();
 
         debugRenderer.render(world, batch.getProjectionMatrix());
     }
+
+
+    private void updateAndRenderTowers(Vector2 playerPosition) {
+        if (!towers.isEmpty()) {
+            towers.forEach((id, tower) -> {
+                if (!tower.isDestroyed()) {
+                    // Update tower
+                    float distanceToPlayer = tower.getBody().getPosition().dst(playerPosition);
+                    if (distanceToPlayer < tower.getDetectionRange()) {
+                        tower.setPlayerInDetectionRange(true);
+                    } else {
+                        tower.setPlayerInDetectionRange(false);
+                    }
+
+                    if (playerPosition.dst(tower.getBody().getPosition()) < tower.getAttackRange() && !tower.isAttacking()) {
+                        tower.setAttacking(true);
+                    } else if (playerPosition.dst(tower.getBody().getPosition()) >= tower.getAttackRange()) {
+                        tower.setAttacking(false);
+                    }
+
+                    // Render attack range indicators
+                    if (tower.isPlayerInDetectionRange()) {
+                        tower.getAttackRangeGreenSprite().setPosition(
+                                tower.getBody().getPosition().x * PPM - tower.getAttackRangeGreenSprite().getWidth() / 2,
+                                tower.getBody().getPosition().y * PPM - tower.getAttackRangeGreenSprite().getHeight() / 2
+                        );
+                        tower.getAttackRangeGreenSprite().draw(batch);
+                    }
+
+                    if (tower.isAttacking()) {
+                        tower.getAttackRangeRedSprite().setPosition(
+                                tower.getBody().getPosition().x * PPM - tower.getAttackRangeRedSprite().getWidth() / 2,
+                                tower.getBody().getPosition().y * PPM - tower.getAttackRangeRedSprite().getHeight() / 2
+                        );
+                        tower.getAttackRangeRedSprite().draw(batch);
+                    }
+
+                    // Render tower
+                    batch.draw(tower.getSprite(),
+                            tower.getBody().getPosition().x * PPM - tower.getSprite().getWidth() / 2,
+                            tower.getBody().getPosition().y * PPM - tower.getSprite().getHeight() / 2);
+
+                    // Render HP bar
+                    tower.updateHpBar();
+                    tower.getHpBarBackground().draw(batch);
+                    tower.getHpBarDisplay().draw(batch);
+                    tower.getHpBarBorder().draw(batch);
+                    if (tower.hp >= 10 * 1000) {
+                        font.draw(batch, String.format("%d k", (int) (tower.currentHp / 1000)) + " / " + String.format("%d k", (int) (tower.hp / 1000)),
+                                tower.getHPBarX() + 83, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
+                    } else {
+                        font.draw(batch, String.format("%.1f k", tower.currentHp / 1000) + " / " + String.format("%.1f k", tower.hp / 1000),
+                                tower.getHPBarX() + 77, (tower.getHPBarY() - 70) + 90 * tower.getHPBarScale() + tower.getHPBarOffset());
+                    }
+                }
+            });
+
+        }
+    }
+
+
 
     private void renderPlayer(Player player) {
         batch.draw(player.getSprite(), player.getCenterX(), player.getCenterY());
@@ -353,6 +393,5 @@ public class Application extends ApplicationAdapter {
             socket.disconnect();
             socket.close();
         }
-        font.dispose();
     }
 }
