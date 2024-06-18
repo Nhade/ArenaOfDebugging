@@ -70,11 +70,12 @@ public class Application extends ApplicationAdapter {
         Texture texture1 = new Texture("character170px.png");
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBar.png");
+        Texture buffHpDisplay = new Texture("buffHPProgressBar.png");
         // Create towers
         initializeTowers(friendlyHpDisplay, enemyHpDisplay);
 
         //Creat buffs
-        initializeBuffs(friendlyHpDisplay, enemyHpDisplay);
+        initializeBuffs(buffHpDisplay);
 
         // Generate a font using FreeTypeFontGenerator
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fredoka-Medium.ttf"));
@@ -239,11 +240,11 @@ public class Application extends ApplicationAdapter {
         elapsedTime = 0f;
     }
 
-    private void initializeBuffs(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
-        buffs.put("AB", new Buff(world, 2719, 5245, 10000, 10000, true, friendlyHpDisplay));
-        buffs.put("AR", new Buff(world, 5559, 2856, 10000, 10000, false, enemyHpDisplay));
-        buffs.put("BB", new Buff(world, 8829, 6555, 10000, 10000, true, friendlyHpDisplay));
-        buffs.put("BR", new Buff(world, 5740, 8885, 10000, 10000, false, enemyHpDisplay));
+    private void initializeBuffs(Texture hpDisplay) {
+        buffs.put("AB", new Buff(world, 2719, 5245, 10000, 10000, true, hpDisplay));
+        buffs.put("AR", new Buff(world, 5559, 2856, 10000, 10000, false, hpDisplay));
+        buffs.put("BB", new Buff(world, 8829, 6555, 10000, 10000, true, hpDisplay));
+        buffs.put("BR", new Buff(world, 5740, 8885, 10000, 10000, false, hpDisplay));
     }
 
     private void initializeTowers(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
@@ -461,7 +462,7 @@ public class Application extends ApplicationAdapter {
         }
 
         // Movement
-        float speed = 46f;
+        float speed = 16f;
         Vector2 velocity = new Vector2();
         velocity.x = 0;
         velocity.y = 0;
