@@ -52,7 +52,10 @@ public class Application extends ApplicationAdapter {
     private BitmapFont progressBarFont;
     private ProgressBar progressBar;
     private TextureRegion progressBarRegion;
-
+    private Texture img;
+    private float elapsedTime; // Timer variable
+    private boolean playerJustDied = false;
+    private Vector2 deathPosition = new Vector2();
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
     private HashMap<String, Buff> buffs = new HashMap<>();
 
@@ -166,6 +169,10 @@ public class Application extends ApplicationAdapter {
                         player.updateHP(currentHealth, player.totalHealth);
                         if (isDead) {
                             player.setDead(true);
+                            if (socketId.equals(mySocketId)) {
+                                deathPosition.set(player.getBody().getPosition());
+                                elapsedTime = 0f; // Reset the timer
+                            }
                         } else {
                             player.setDead(false);
                         }
@@ -232,6 +239,8 @@ public class Application extends ApplicationAdapter {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        img = new Texture(Gdx.files.internal("deadImage.jpg"));
+        elapsedTime = 0f;
     }
 
     private void initializeBuffs(Texture friendlyHpDisplay, Texture enemyHpDisplay) {
@@ -301,6 +310,13 @@ public class Application extends ApplicationAdapter {
             batch.draw(progressBarRegion, myPlayer.getHPBarX(), myPlayer.getHPBarY() - 200);
         }
 
+        updateAndRenderTowers(myPlayer.getBody().getPosition());
+        if (myPlayer.isDead()) {
+            elapsedTime += Gdx.graphics.getDeltaTime();
+            if (elapsedTime < 5f) {
+                batch.draw(img, deathPosition.x * PPM - img.getWidth() / 2, deathPosition.y * PPM - img.getHeight() / 2); // 在死亡位置绘制图像
+            }
+        }
         batch.setProjectionMatrix(camera.combined);
         batch.draw(filter, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
         batch.end();
@@ -525,5 +541,6 @@ public class Application extends ApplicationAdapter {
             socket.disconnect();
             socket.close();
         }
+        img.dispose();
     }
 }
