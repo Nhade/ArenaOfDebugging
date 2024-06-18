@@ -310,11 +310,10 @@ public class Application extends ApplicationAdapter {
             batch.draw(progressBarRegion, myPlayer.getHPBarX(), myPlayer.getHPBarY() - 200);
         }
 
-        updateAndRenderTowers(myPlayer.getBody().getPosition());
         if (myPlayer.isDead()) {
             elapsedTime += Gdx.graphics.getDeltaTime();
             if (elapsedTime < 5f) {
-                batch.draw(img, deathPosition.x * PPM - img.getWidth() / 2, deathPosition.y * PPM - img.getHeight() / 2); // 在死亡位置绘制图像
+                batch.draw(img, deathPosition.x * PPM - img.getWidth() / 2, deathPosition.y * PPM - img.getHeight() / 2);
             }
         }
         batch.setProjectionMatrix(camera.combined);
