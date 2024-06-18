@@ -25,7 +25,7 @@ public class ProgressBar {
     public TextureRegion progressBarDisplay(float deltaTime) {
         timeElapsed += deltaTime;
         if (timeElapsed > progressBarMaxTime) {
-            timeElapsed = progressBarMaxTime; // Cap the time elapsed to max time
+            timeElapsed = progressBarMaxTime;// Cap the time elapsed to max time
             isKeyPressed = false; // Stop progressing once max time is reached
         }
         int filledSegments = (int) (progressBarWidth * (timeElapsed / progressBarMaxTime));
@@ -37,6 +37,10 @@ public class ProgressBar {
     public TextureRegion progressBarBackground() {
         backGroundTextureRegion = new TextureRegion(barBackgroundTexture, 0, 0, (int) progressBarWidth, (int) progressBarHeight);
         return backGroundTextureRegion;
+    }
+
+    public boolean isMaxTimeReached() {
+        return timeElapsed >= progressBarMaxTime;
     }
 
     public void setIsKeyPressed(boolean isKeyPressed) {

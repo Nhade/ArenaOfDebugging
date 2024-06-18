@@ -325,6 +325,10 @@ public class Application extends ApplicationAdapter {
                 batch.draw(img, deathPosition.x * PPM - img.getWidth() / 2, deathPosition.y * PPM - img.getHeight() / 2);
             }
         }
+
+        if (progressBar.isMaxTimeReached()){
+            socket.emit("playerRecall");
+        }
         batch.setProjectionMatrix(camera.combined);
         batch.draw(filter, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
         batch.end();
