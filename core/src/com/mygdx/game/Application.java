@@ -14,9 +14,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -31,7 +28,6 @@ import java.util.HashMap;
 import static com.mygdx.game.Constant.*;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import org.w3c.dom.Text;
 
 public class Application extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -465,7 +461,7 @@ public class Application extends ApplicationAdapter {
         }
 
         // Movement
-        float speed = 16f;
+        float speed = 46f;
         Vector2 velocity = new Vector2();
         velocity.x = 0;
         velocity.y = 0;
@@ -524,6 +520,34 @@ public class Application extends ApplicationAdapter {
                             }
 
                         }
+                    }
+                });
+                towers.forEach((id, tower) -> {
+                    if (!tower.isFriendly) {
+                        if (tower.getBody().getPosition().dst(playerPosition) <= 7.8) {
+                            JSONObject data = new JSONObject();
+                            try {
+                                data.put("towerId", id);
+                                data.put("attackId", 0);
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                            socket.emit("towerAttack", data);
+                        }
+
+
+                    }
+                });
+                buffs.forEach((id, buff) -> {
+                    if (buff.getBody().getPosition().dst(playerPosition) <= 7.8) {
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("buffId", id);
+                            data.put("attackId", 0);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        socket.emit("buffAttack", data);
                     }
                 });
             }
