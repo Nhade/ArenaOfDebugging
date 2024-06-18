@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -54,7 +55,9 @@ public class Application extends ApplicationAdapter {
     private Vector2 deathPosition = new Vector2();
     private HashMap<String, com.mygdx.game.Tower> towers = new HashMap<>();
     private HashMap<String, Buff> buffs = new HashMap<>();
-
+    private Sprite attackRangeIndicator;
+    private boolean renderAttackRange = false;
+    private int attackRangeIndicatorFrames = 5;
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -71,6 +74,8 @@ public class Application extends ApplicationAdapter {
         Texture friendlyHpDisplay = new Texture("BarV9BLUE_ProgressBar.png");
         Texture enemyHpDisplay = new Texture("BarV5RED_ProgressBar.png");
         Texture buffHpDisplay = new Texture("buffHPProgressBar.png");
+        Texture attackRangeTexture = new Texture("buffAttackRange4pxbold.png");
+        attackRangeIndicator = new Sprite(attackRangeTexture);
         // Create towers
         initializeTowers(friendlyHpDisplay, enemyHpDisplay);
 
@@ -291,6 +296,13 @@ public class Application extends ApplicationAdapter {
         camera.update();
         updateAndRenderTowers(myPlayer.getBody().getPosition()); // Call the new combined method here
         updateAndRenderBuffs(myPlayer.getBody().getPosition());
+        if (renderAttackRange && attackRangeIndicatorFrames > 0) {
+            batch.draw(attackRangeIndicator, myPlayer.getBody().getPosition().x * PPM - attackRangeIndicator.getWidth() / 2, myPlayer.getBody().getPosition().y * PPM - attackRangeIndicator.getHeight() / 2);
+            attackRangeIndicatorFrames--;
+        } else {
+            renderAttackRange = false;
+            attackRangeIndicatorFrames = 5;
+        }
         if (!myPlayer.isDead()) {
             renderPlayer(myPlayer);
         }
@@ -500,6 +512,7 @@ public class Application extends ApplicationAdapter {
         }
         // Attack
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            renderAttackRange = true;
             long currentTime = System.currentTimeMillis();
             long lastAttackTime = myPlayer.getLastAttackTime();
             if (currentTime - lastAttackTime > 600) {
